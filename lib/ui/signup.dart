@@ -14,86 +14,135 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      Icons.circle_outlined,
-                      color: Colors.blueAccent,
-                    )
-                  ],
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    "See what's happening in the world right now.",
-                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 30),
-                  ),
-                ),
-                const Spacer(),
-                Column(
-                  children: [
-                    FlatBtn(
-                      label: 'Continue with Google',
-                      labelColor: Colors.black,
-                      color: Colors.transparent,
-                      fontWeight: FontWeight.bold,
-                      onPress: () {},
-                    ),
-                    FlatBtn(
-                      onPress: () {},
-                      leading: Icons.apple_sharp,
-                      label: 'Continue with Apple',
-                      labelColor: Colors.black,
-                      color: Colors.transparent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Divider(
-                          color: Colors.amber,
-                        ),
-                        Text("Or"),
-                        Divider(
-                          color: Colors.amber,
-                        )
-                      ],
-                    ),
-                    FlatBtn(
-                      onPress: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Testing()));
-                      },
-                      label: 'Create account',
-                      labelColor: Colors.white,
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ],
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    children: [
-                      Text(
-                          "By signing up, yuo agree to the"),
-                      TextButton(onPressed: (){}, child: Text(
-        "Terms of Service",
-        style: const TextStyle(color: Colors.blueAccent),
-      ),)
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+          child: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(
+                        Icons.circle_outlined,
+                        color: Colors.blueAccent,
+                      )
                     ],
                   ),
-                )
-              ],
+                  const Spacer(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Text(
+                      "See what's happening in the world right now.",
+                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 30),
+                    ),
+                  ),
+                  const Spacer(),
+                  Column(
+                    children: [
+                      FlatBtn(
+                        label: 'Continue with Google',
+                        labelColor: Colors.black,
+                        color: Colors.transparent,
+                        fontWeight: FontWeight.bold,
+                        onPress: () {},
+                      ),
+                      FlatBtn(
+                        onPress: () {},
+                        leading: Icons.apple_sharp,
+                        label: 'Continue with Apple',
+                        labelColor: Colors.black,
+                        color: Colors.transparent,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Divider(
+                            color: Colors.amber,
+                          ),
+                          Text("Or"),
+                          Divider(
+                            color: Colors.amber,
+                          )
+                        ],
+                      ),
+                      FlatBtn(
+                        onPress: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Testing()));
+                        },
+                        label: 'Create account',
+                        labelColor: Colors.white,
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text("By signing up, you agree to the"),
+                            TextButton(
+                              onPressed: () {},
+                              child: const Text(
+                                "Terms of Service",
+                                style: TextStyle(color: Colors.blueAccent),
+                              ),
+                            ),
+                            const Text("and")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            TextButton(
+                              onPressed: () {},
+                              child: const Text(
+                                "Privacy Policy,",
+                                style: TextStyle(color: Colors.blueAccent),
+                              ),
+                            ),
+                            const Text("including"),
+                            TextButton(
+                              onPressed: () {},
+                              child: const Text(
+                                "Cookie Use.",
+                                style: TextStyle(color: Colors.blueAccent),
+                              ),
+                            ),
+                            const Text(
+                              "Others ",
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                        const Text(
+                            "will be able to find you by email or phone number when provided."),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Have you signed up already?"),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "Login.",
+                          style: TextStyle(color: Colors.blueAccent),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -162,6 +211,15 @@ class FlatBtn extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: color,
+          gradient: LinearGradient(colors: [
+            Colors.white,
+            color!,
+            color!,
+            Colors.white
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.topRight,
+          ),
           borderRadius: BorderRadius.circular(50),
           boxShadow: const [
             BoxShadow(

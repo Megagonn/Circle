@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/ui/testing.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
@@ -11,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool alreadyHasAccount = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -75,9 +77,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const Testing()));
+                                  builder: (context) => const LoginWithEmail()));
                         },
-                        label: 'Create account',
+                        label: alreadyHasAccount ? "Login" : 'Create account',
                         labelColor: Colors.white,
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.normal,
@@ -87,14 +89,15 @@ class _SignUpPageState extends State<SignUpPage> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Text("By signing up, you agree to the"),
-                            TextButton(
-                              onPressed: () {},
+                            const Text("By signing up, you agree to the "),
+                            InkWell(
+                              onTap: () {},
                               child: const Text(
-                                "Terms of Service",
+                                "Terms of Service ",
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
                             ),
@@ -103,18 +106,18 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                         Row(
                           children: [
-                            TextButton(
-                              onPressed: () {},
+                            InkWell(
+                              onTap: () {},
                               child: const Text(
-                                "Privacy Policy,",
+                                "Privacy Policy, ",
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
                             ),
-                            const Text("including"),
-                            TextButton(
-                              onPressed: () {},
+                            const Text("including "),
+                            InkWell(
+                              onTap: () {},
                               child: const Text(
-                                "Cookie Use.",
+                                "Cookie Use. ",
                                 style: TextStyle(color: Colors.blueAccent),
                               ),
                             ),
@@ -133,10 +136,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Have you signed up already?"),
+                      Text(alreadyHasAccount ? "Don't have an account?" : "Have you signed up already?"),
                       TextButton(
-                        onPressed: () {},
-                        child: const Text(
+                        onPressed: () {
+                          setState(() {
+                            alreadyHasAccount = !alreadyHasAccount;
+                          });
+                        },
+                        child: Text( alreadyHasAccount ? "Sign Up" :
                           "Login.",
                           style: TextStyle(color: Colors.blueAccent),
                         ),
@@ -152,4 +159,3 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 }
-

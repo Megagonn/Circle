@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:twit/ui/loginwithemail.dart';
+import 'package:twit/ui/signupwithemail.dart';
 import 'package:twit/ui/testing.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
@@ -77,7 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginWithEmail()));
+                                  builder: (context) => const SignUpWithEmail()));
                         },
                         label: alreadyHasAccount ? "Login" : 'Create account',
                         labelColor: Colors.white,

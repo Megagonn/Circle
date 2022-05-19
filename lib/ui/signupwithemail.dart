@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:twit/ui/signupwithemail.dart';
+import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
-class LoginWithEmail extends StatefulWidget {
-  const LoginWithEmail({Key? key}) : super(key: key);
+class SignUpWithEmail extends StatefulWidget {
+  const SignUpWithEmail({Key? key}) : super(key: key);
 
   @override
-  State<LoginWithEmail> createState() => _LoginWithEmailState();
+  State<SignUpWithEmail> createState() => _SignUpWithEmailState();
 }
 
-class _LoginWithEmailState extends State<LoginWithEmail> {
+class _SignUpWithEmailState extends State<SignUpWithEmail> {
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   bool showPassword = true;
@@ -38,7 +41,38 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                     ],
                   ),
                   const Spacer(),
-                  
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: TextFormField(
+                      controller: firstNameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'First name',
+                        hintStyle: const TextStyle(color: Colors.blueAccent),
+                        focusedBorder: InputBorder.none,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: TextFormField(
+                      controller: lastNameController,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Last name',
+                        hintStyle: const TextStyle(color: Colors.blueAccent),
+                        focusedBorder: InputBorder.none,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                      ),
+                    ),
+                  ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 6),
                     child: TextFormField(
@@ -47,6 +81,22 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                         filled: true,
                         fillColor: Colors.white,
                         hintText: 'Email',
+                        hintStyle: const TextStyle(color: Colors.blueAccent),
+                        focusedBorder: InputBorder.none,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 6),
+                    child: TextFormField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: 'Phone',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
                         focusedBorder: InputBorder.none,
                         border: OutlineInputBorder(
@@ -82,7 +132,7 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 100,
                     child: FlatBtn(
-                      label: 'Login',
+                      label: 'Sign up',
                       onPress: () {},
                       fontWeight: FontWeight.w600,
                       labelColor: Colors.white,
@@ -93,13 +143,17 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?"),
+                      const Text("Have you signed up already?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignUpWithEmail()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const LoginWithEmail()));
                         },
                         child: const Text(
-                          "Sign Up.",
+                          "Login.",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -115,3 +169,16 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
   }
 }
 
+// ff(TextEditingController controller, String label) {
+//   return TextFormField(
+//     controller: controller,
+//     decoration: InputDecoration(
+//       filled: true,
+//       fillColor: Colors.white,
+//       hintText: 'First name',
+//       focusedBorder: InputBorder.none,
+//       border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+//     ),
+//   );
+//   // return controller.text;
+// }

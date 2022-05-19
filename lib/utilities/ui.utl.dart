@@ -72,7 +72,7 @@ class FlatBtn extends StatelessWidget {
           ],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(
+          leading == null ? const SizedBox.shrink() : Icon(
             leading,
             color: labelColor,
           ),

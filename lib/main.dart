@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twit/ui/homepage.dart';
+import 'package:twit/ui/newpost.dart';
 import 'package:twit/ui/search.dart';
 import 'package:twit/ui/signup.dart';
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const SearchCircle(),
+      home: const Post(),
     );
   }
 }

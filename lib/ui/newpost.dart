@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:twit/utilities/ui.utl.dart';
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -12,70 +13,7 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
-  XFile? image;
-  // ImagePicker _picker = ImagePicker();
-  Future pickImage(ImageSource source) async {
-    try {
-      image = await ImagePicker().pickImage(source: source);
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    // setState(() async {
-    //   image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    // });
-    // return image;
-  }
-
-  chooseLocation(context) {
-    return showModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      elevation: 4,
-      enableDrag: true,
-      context: context,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          color: Colors.white,
-        ),
-        height: 100,
-        child: Row(
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () async {
-                  await pickImage(ImageSource.camera);
-                },
-                child: Column(
-                  children: const [
-                    Expanded(
-                        child: Icon(Icons.camera_outlined,
-                            size: 80, color: Colors.blueAccent)),
-                    Text("Camera")
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () async {
-                  await pickImage(ImageSource.gallery);
-                },
-                child: Column(
-                  children: const [
-                    Expanded(
-                        child: Icon(Icons.image_outlined,
-                            size: 80, color: Colors.blueAccent)),
-                    Text("Gallery")
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+ 
 
   // String imagePreview(){
   //   Image.file(File(_imageFileList![index].path)),
@@ -88,7 +26,7 @@ class _PostState extends State<Post> {
             FloatingActionButtonLocation.miniCenterFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            chooseLocation(context);
+            PickImage().chooseLocation(context);
             // pickImage(ImageSource.gallery);
             // image = await _picker.pickImage(source: ImageSource.gallery);
           },

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 textBtn({required String text, required onPress}) {
   InkWell(
@@ -33,6 +35,8 @@ class TextBtn extends StatelessWidget {
   }
 }
 
+/// [FlatBtn] is a reusable button widget that can take in
+/// [IconData] and string [label]
 class FlatBtn extends StatelessWidget {
   final String label;
   final Color? labelColor;
@@ -40,15 +44,15 @@ class FlatBtn extends StatelessWidget {
   final IconData? leading;
   final FontWeight? fontWeight;
   final onPress;
-  const FlatBtn(
-      {Key? key,
-      required this.label,
-      this.leading,
-      this.labelColor,
-      this.color,
-      this.fontWeight,
-      required this.onPress})
-      : super(key: key);
+  const FlatBtn({
+    Key? key,
+    required this.label,
+    this.leading,
+    this.labelColor,
+    this.color,
+    this.fontWeight,
+    required this.onPress,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +92,7 @@ class FlatBtn extends StatelessWidget {
   }
 }
 
+/// [CircleCard] is the post UI model.
 class CircleCard extends StatefulWidget {
   const CircleCard({Key? key}) : super(key: key);
 
@@ -117,9 +122,11 @@ class _CircleCardState extends State<CircleCard> {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: const [CircleAvatar(
-                backgroundImage: AssetImage('assets/img1.jpeg'),
-              )],
+              children: const [
+                CircleAvatar(
+                  backgroundImage: AssetImage('assets/img1.jpeg'),
+                )
+              ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -167,14 +174,12 @@ class _CircleCardState extends State<CircleCard> {
                         width: MediaQuery.of(context).size.width,
                         height: 200,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.red,
-                          image: DecorationImage(image: AssetImage('assets/img2.jpeg'), fit: BoxFit.cover, )
-                        ),
-                        // child: ClipRRect(
-                        //   clipBehavior: Clip.antiAlias,
-                        //   borderRadius: BorderRadius.circular(10),
-                        //   child: Image(image: AssetImage('assets/img2.jpeg'), fit: BoxFit.cover,)),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red,
+                            image: const DecorationImage(
+                              image: AssetImage('assets/img2.jpeg'),
+                              fit: BoxFit.cover,
+                            )),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -193,7 +198,7 @@ class _CircleCardState extends State<CircleCard> {
                               count: 5),
                           IconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.share_outlined,
+                              icon: const Icon(Icons.share_outlined,
                                   size: 16, color: Colors.grey))
                         ],
                       )
@@ -209,6 +214,7 @@ class _CircleCardState extends State<CircleCard> {
   }
 }
 
+/// Post reaction buttons.
 class ActionBtn extends StatefulWidget {
   final IconData iconData;
   final onPressed;
@@ -236,6 +242,120 @@ class _ActionBtnState extends State<ActionBtn> {
         ),
         Text(widget.count.toString())
       ],
+    );
+  }
+}
+
+/// Home page drawer returning a [Drawer]
+drawer() {
+  // print('object');
+  return Drawer(
+    elevation: 4,
+    backgroundColor: Colors.white,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CircleAvatar(
+            backgroundImage: AssetImage('assets/img2.jpeg'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Name Name',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.arrow_drop_down_outlined,
+                  color: Colors.blueAccent,
+                ),
+              ),
+            ],
+          ),
+          const Text(
+            '@name',
+            style: TextStyle(fontWeight: FontWeight.w400),
+          ),
+          Row(
+            children: [],
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+/// Image pickers class
+/// It has method [pickImage] that takes [ImageSource] as parameter
+class PickImage {
+  XFile? image;
+  // ImagePicker _picker = ImagePicker();
+  Future pickImage(ImageSource source) async {
+    try {
+      image = await ImagePicker().pickImage(source: source);
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+    // setState(() async {
+    //   image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    // });
+    // return image;
+  }
+
+  /// This function allows user to either select image from gallery or
+  /// camera
+  chooseLocation(context) {
+    return showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      elevation: 4,
+      enableDrag: true,
+      context: context,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          color: Colors.white,
+        ),
+        height: 100,
+        child: Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  await pickImage(ImageSource.camera);
+                },
+                child: Column(
+                  children: const [
+                    Expanded(
+                        child: Icon(Icons.camera_outlined,
+                            size: 80, color: Colors.blueAccent)),
+                    Text("Camera")
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  await pickImage(ImageSource.gallery);
+                },
+                child: Column(
+                  children: const [
+                    Expanded(
+                        child: Icon(Icons.image_outlined,
+                            size: 80, color: Colors.blueAccent)),
+                    Text("Gallery")
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

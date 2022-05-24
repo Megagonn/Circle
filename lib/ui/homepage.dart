@@ -17,6 +17,7 @@ class _HomeState extends State<Home> {
         //   sliver:
         SafeArea(
       child: Scaffold(
+        drawer: drawer(),
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -71,10 +72,16 @@ class _HomeState extends State<Home> {
               elevation: 1,
               floating: true,
               backgroundColor: Colors.white,
-              leading: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 14,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+                    drawer();
+                  },
+                  child: const CircleAvatar(
+                    backgroundImage: AssetImage('assets/img2.jpeg'),
+                    radius: 14,
+                  ),
                 ),
               ),
               centerTitle: true,

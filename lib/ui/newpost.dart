@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:twit/utilities/imagepicker.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
 class Post extends StatefulWidget {

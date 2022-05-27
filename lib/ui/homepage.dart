@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:twit/ui/newpost.dart';
+import 'package:twit/utilities/circlepost.dart';
+import 'package:twit/utilities/drawer.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
 class Home extends StatefulWidget {
@@ -12,10 +14,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return
-        // const SliverSafeArea(
-        //   sliver:
-        SafeArea(
+    return SafeArea(
       child: Scaffold(
         drawer: drawer(context),
         backgroundColor: Colors.white,
@@ -25,46 +24,6 @@ class _HomeState extends State<Home> {
                 context, MaterialPageRoute(builder: (context) => const Post()));
           },
           child: const Icon(Icons.add),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.home_outlined,
-                    color: Colors.blueAccent,
-                  )),
-              label: '',
-              // backgroundColor: Colors.amberAccent,
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.search_outlined,
-                    color: Colors.blueAccent,
-                  )),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.blueAccent,
-                    )),
-                label: 'Home'),
-            BottomNavigationBarItem(
-                icon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.mail_outline_outlined,
-                      color: Colors.blueAccent,
-                    )),
-                label: 'Home'),
-          ],
-          elevation: 8,
         ),
         body: CustomScrollView(
           slivers: [

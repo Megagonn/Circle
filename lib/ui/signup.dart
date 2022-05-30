@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:twit/firebase/fireauth.dart';
+import 'package:twit/ui/homepage.dart';
+import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/ui/signupwithemail.dart';
 import 'package:twit/ui/testing.dart';
 import 'package:twit/utilities/ui.utl.dart';
@@ -50,7 +53,22 @@ class _SignUpPageState extends State<SignUpPage> {
                         labelColor: Colors.black,
                         color: Colors.transparent,
                         fontWeight: FontWeight.bold,
-                        onPress: () {},
+                        onPress: () async {
+                          if (alreadyHasAccount) {
+                            var res = await FireAuth().signInWithGoogle();
+
+                            if (res == 'success') {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Home()));
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(content: Text('Invalid credential...')));
+                            }
+                          }
+                          null;
+                        },
                       ),
                       FlatBtn(
                         onPress: () {},
@@ -74,10 +92,17 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       FlatBtn(
                         onPress: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUpWithEmail()));
+                          alreadyHasAccount
+                              ? Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const LoginWithEmail()))
+                              : Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SignUpWithEmail()));
                         },
                         label: alreadyHasAccount ? "Login" : 'Create account',
                         labelColor: Colors.white,
@@ -136,15 +161,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(alreadyHasAccount ? "Don't have an account?" : "Have you signed up already?"),
+                      Text(alreadyHasAccount
+                          ? "Don't have an account?"
+                          : "Have you signed up already?"),
                       TextButton(
                         onPressed: () {
                           setState(() {
                             alreadyHasAccount = !alreadyHasAccount;
                           });
                         },
-                        child: Text( alreadyHasAccount ? "Sign Up" :
-                          "Login.",
+                        child: Text(
+                          alreadyHasAccount ? "Sign Up" : "Login.",
                           style: TextStyle(color: Colors.blueAccent),
                         ),
                       ),

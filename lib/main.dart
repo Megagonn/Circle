@@ -1,11 +1,29 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/ui/homepage.dart';
 import 'package:twit/ui/newpost.dart';
 import 'package:twit/ui/pageview.dart';
+import 'package:twit/ui/profile.dart';
 import 'package:twit/ui/search.dart';
 import 'package:twit/ui/signup.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyAtYx7mQTmo3wfXZ5qN9ETd7NasXwwyMmo",
+        appId: "1:266577175299:web:94c074db4b70f5793a3f36",
+        messagingSenderId: "266577175299",
+        projectId: "circles-762a7",
+        authDomain: "circles-762a7.firebaseapp.com",
+        storageBucket: "circles-762a7.appspot.com",
+      ));
+  } else {
+    await Firebase.initializeApp();
+    
+  }
   runApp(const MyApp());
 }
 
@@ -19,20 +37,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const PageViews(),
+      home: const SignUpPage(),
     );
   }
 }
-
-

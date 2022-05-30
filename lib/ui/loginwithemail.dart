@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:twit/firebase/fireauth.dart';
+import 'package:twit/ui/homepage.dart';
 import 'package:twit/ui/signupwithemail.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
@@ -38,7 +40,6 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                     ],
                   ),
                   const Spacer(),
-                  
                   Container(
                     margin: const EdgeInsets.only(bottom: 6),
                     child: TextFormField(
@@ -83,7 +84,17 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                     width: MediaQuery.of(context).size.width - 100,
                     child: FlatBtn(
                       label: 'Login',
-                      onPress: () {},
+                      onPress: () async {
+                        var res = await FireAuth().login(
+                            email: emailController.text,
+                            password: passwordController.text);
+                        if (res == 'success') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Home()));
+                        }
+                      },
                       fontWeight: FontWeight.w600,
                       labelColor: Colors.white,
                       color: Colors.blueAccent,
@@ -96,7 +107,11 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                       const Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignUpWithEmail()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SignUpWithEmail()),);
                         },
                         child: const Text(
                           "Sign Up.",
@@ -114,4 +129,3 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
     );
   }
 }
-

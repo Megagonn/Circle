@@ -35,7 +35,6 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
-                    // drawer();
                   },
                   child: const CircleAvatar(
                     backgroundImage: AssetImage('assets/img2.jpeg'),
@@ -53,7 +52,7 @@ class _HomeState extends State<Home> {
               actions: [
                 IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.star_outlined,
+                    icon: const Icon(Icons.auto_awesome_outlined,
                         color: Colors.blueAccent))
               ],
             ),

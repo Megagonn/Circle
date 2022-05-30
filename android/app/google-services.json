@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "266577175299",
+    "project_id": "circles-762a7",
+    "storage_bucket": "circles-762a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266577175299:android:3395ffafb1db5b0a3a3f36",
+        "android_client_info": {
+          "package_name": "com.megagon.circle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266577175299-qqmvgs4n8jddqa0nq225319d9khrtqg9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.megagon.circle",
+            "certificate_hash": "33a80d55f09f43ee103c18c782b8ff509decaa4e"
+          }
+        },
+        {
+          "client_id": "266577175299-18i6o8e47l8vn8tq892g5ve8ssv4aqb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJAGtozkQ9aUGoZi6-xhQ6_h0PD1OFUbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "266577175299-18i6o8e47l8vn8tq892g5ve8ssv4aqb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

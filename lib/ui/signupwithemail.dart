@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twit/firebase/fireauth.dart';
 import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
@@ -133,7 +134,17 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                     width: MediaQuery.of(context).size.width - 100,
                     child: FlatBtn(
                       label: 'Sign up',
-                      onPress: () {},
+                      onPress: () async {
+                        var res = await FireAuth().signUpUser(
+                          email: emailController.text,
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          password: passwordController.text,
+                          username: '@${firstNameController.text}',
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(res)));
+                      },
                       fontWeight: FontWeight.w600,
                       labelColor: Colors.white,
                       color: Colors.blueAccent,

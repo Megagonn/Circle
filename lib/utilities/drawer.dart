@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twit/ui/profile.dart';
 
 /// Home page drawer returning a [Drawer]
 drawer(BuildContext context) {
@@ -47,13 +48,13 @@ drawer(BuildContext context) {
           // ),
           Column(
             children: [
-              drawerLink(context, Icons.person_outline_outlined, 'Profile'),
-              drawerLink(context, Icons.list_alt_outlined, 'Lists'),
-              drawerLink(context, Icons.topic_outlined, 'Topics'),
-              drawerLink(context, Icons.bookmark_border_outlined, 'Bookmarks'),
-              drawerLink(context, Icons.stacked_line_chart_outlined, 'Moments'),
+              drawerLink(context, Icons.person_outline_outlined, 'Profile', const Profile()),
+              drawerLink(context, Icons.list_alt_outlined, 'Lists', ''),
+              drawerLink(context, Icons.topic_outlined, 'Topics', ''),
+              drawerLink(context, Icons.bookmark_border_outlined, 'Bookmarks', ''),
+              drawerLink(context, Icons.stacked_line_chart_outlined, 'Moments', ''),
               drawerLink(
-                  context, Icons.person_add_alt_outlined, 'Follower request'),
+                  context, Icons.person_add_alt_outlined, 'Follower request', ''),
             ],
           ),
           const Divider(
@@ -67,9 +68,11 @@ drawer(BuildContext context) {
   );
 }
 
-drawerLink(BuildContext context, IconData iconData, String label) {
+drawerLink(BuildContext context, IconData iconData, String label, route) {
   return InkWell(
-    onTap: () {},
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> route));
+    },
     child: Container(
       width: MediaQuery.of(context).size.width / 2,
       padding: const EdgeInsets.all(8),

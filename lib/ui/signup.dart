@@ -27,13 +27,15 @@ class _SignUpPageState extends State<SignUpPage> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
+                  const Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
                       Icon(
                         Icons.circle_outlined,
                         color: Colors.blueAccent,
-                      )
+                        size: 90,
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -59,15 +61,36 @@ class _SignUpPageState extends State<SignUpPage> {
 
                             if (res == 'success') {
                               Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Home()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Home(),
+                                ),
+                              );
                             } else {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(content: Text('Invalid credential...')));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid credential...'),
+                                ),
+                              );
+                            }
+                          } else {
+                            var res =
+                                await FireAuth().signupWithGoogle(context);
+                                if (res == 'success') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Home(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                 SnackBar(
+                                  content: Text(res.toString()),
+                                ),
+                              );
                             }
                           }
-                          null;
                         },
                       ),
                       FlatBtn(
@@ -172,11 +195,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         child: Text(
                           alreadyHasAccount ? "Sign Up" : "Login.",
-                          style: TextStyle(color: Colors.blueAccent),
+                          style: const TextStyle(color: Colors.blueAccent),
                         ),
                       ),
                     ],
                   ),
+                  const Spacer(),
                 ],
               ),
             ),

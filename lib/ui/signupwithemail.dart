@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twit/firebase/fireauth.dart';
 import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/utilities/ui.utl.dart';
+import 'package:uuid/uuid.dart';
 
 class SignUpWithEmail extends StatefulWidget {
   const SignUpWithEmail({Key? key}) : super(key: key);
@@ -140,7 +141,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                           firstName: firstNameController.text,
                           lastName: lastNameController.text,
                           password: passwordController.text,
-                          username: '@${firstNameController.text}',
+                          username: '@${firstNameController.text}', 
+                          uid: const Uuid().v1(),
                         );
                         ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(content: Text(res)));

@@ -14,18 +14,19 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        drawer: drawer(context),
-        backgroundColor: Colors.white,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const Post()));
-          },
-          child: const Icon(Icons.add),
-        ),
-        body: CustomScrollView(
+    return Scaffold(
+      // appBar: AppBar(),
+      drawer: drawer(context),
+      backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const Post()));
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: SafeArea(
+        child: CustomScrollView(
           slivers: [
             SliverAppBar(
               elevation: 1,

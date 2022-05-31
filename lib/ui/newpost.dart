@@ -1,10 +1,16 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:twit/firebase/post_method.dart';
+import 'package:twit/ui/homepage.dart';
 import 'package:twit/utilities/imagepicker.dart';
 import 'package:twit/utilities/ui.utl.dart';
+import 'package:uuid/uuid.dart';
+
+File? pickedImage;
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -14,11 +20,14 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
- 
+  TextEditingController controller = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    PostMethods().readPosts();
+  }
 
-  // String imagePreview(){
-  //   Image.file(File(_imageFileList![index].path)),
-  // }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,9 +36,7 @@ class _PostState extends State<Post> {
             FloatingActionButtonLocation.miniCenterFloat,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            PickImage().chooseLocation(context);
-            // pickImage(ImageSource.gallery);
-            // image = await _picker.pickImage(source: ImageSource.gallery);
+            chooseLocation(context);
           },
           child: const Icon(Icons.add_a_photo_outlined),
         ),
@@ -46,13 +53,34 @@ class _PostState extends State<Post> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(Icons.close_outlined,
-                                    color: Colors.blueAccent),),
+                              onPressed: () {
+                                pickedImage = null;
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.close_outlined,
+                                  color: Colors.blueAccent),
+                            ),
                             InkWell(
-                              onTap: (){},
+                              onTap: () async {
+                                if (controller.text.isNotEmpty ||
+                                    pickedImage != null) {
+                                  var res = await PostMethods().addPost(
+                                    uid: Uuid().v1(),
+                                    username: '@meg',
+                                    profileImg: 'profileImg',
+                                    text: controller.text,
+                                    file: pickedImage!.readAsBytesSync(),
+                                  );
+                                  if (res == 'success') {
+                                    pickedImage = null;
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Home()));
+                                  }
+                                }
+                              },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 6, horizontal: 15),
@@ -86,12 +114,13 @@ class _PostState extends State<Post> {
                                 )
                               ],
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 5,
                               child: TextField(
+                                controller: controller,
                                 maxLines: 6,
                                 maxLength: 250,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   hintText: "What's happening?",
                                   border: InputBorder.none,
                                 ),
@@ -103,20 +132,23 @@ class _PostState extends State<Post> {
                           padding: const EdgeInsets.only(
                             left: 50,
                           ),
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 5),
-                            // padding: const EdgeInsets.only(left: 50,),
-                            width: MediaQuery.of(context).size.width,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.red,
-                              image: const DecorationImage(
-                                image: AssetImage('assets/img2.jpeg'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                          child: pickedImage != null
+                              ? Container(
+                                  margin: const EdgeInsets.only(top: 5),
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red,
+                                    image: pickedImage == null
+                                        ? null
+                                        : DecorationImage(
+                                            image: FileImage(pickedImage!),
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                )
+                              : null,
                         ),
                       ],
                     ),
@@ -125,6 +157,84 @@ class _PostState extends State<Post> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  XFile? image;
+  // ImagePicker _picker = ImagePicker();
+  Future pickImage(ImageSource source) async {
+    try {
+      image = await ImagePicker().pickImage(source: source);
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+    File file = File(image!.path);
+    return file;
+  }
+
+  /// This function allows user to either select image from gallery or
+  /// camera
+  chooseLocation(context) {
+    return showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      elevation: 4,
+      enableDrag: true,
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(14),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          color: Colors.white,
+        ),
+        height: 100,
+        child: Row(
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  pickedImage = await pickImage(ImageSource.camera);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: Column(
+                  children: const [
+                    Expanded(
+                      child: Icon(Icons.camera_outlined,
+                          size: 60, color: Colors.blueAccent),
+                    ),
+                    Text(
+                      "Camera",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  pickedImage = await pickImage(ImageSource.gallery);
+                  setState(() {});
+                  Navigator.pop(context);
+                },
+                child: Column(
+                  children: const [
+                    Expanded(
+                      child: Icon(Icons.image_outlined,
+                          size: 60, color: Colors.blueAccent),
+                    ),
+                    Text(
+                      "Gallery",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -21,6 +21,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   TextEditingController controller = TextEditingController();
+  bool showSourceOption = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -30,16 +31,46 @@ class _PostState extends State<Post> {
 
   @override
   Widget build(BuildContext context) {
+    Map profile = ModalRoute.of(context)!.settings.arguments as Map;
     return SafeArea(
       child: Scaffold(
         floatingActionButtonLocation:
             FloatingActionButtonLocation.miniCenterFloat,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            chooseLocation(context);
-          },
-          child: const Icon(Icons.add_a_photo_outlined),
-        ),
+        floatingActionButton: !showSourceOption
+            ? FloatingActionButton(
+                heroTag: '1',
+                onPressed: () {
+                  showSourceOption = !showSourceOption;
+                  setState(() {});
+                  // chooseLocation(context);
+                },
+                child: const Icon(Icons.add_a_photo_outlined),
+              )
+            : Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                FloatingActionButton(
+                  heroTag: '2',
+                  onPressed: () async {
+                    showSourceOption = !showSourceOption;
+                    pickedImage = await pickImage(ImageSource.camera);
+                    setState(() {});
+                    // chooseLocation(context);
+                  },
+                  child: const Icon(Icons.camera_outlined),
+                ),
+                SizedBox(
+                  width: 40,
+                ),
+                FloatingActionButton(
+                  heroTag: '3',
+                  onPressed: () async {
+                    showSourceOption = !showSourceOption;
+                    pickedImage = await pickImage(ImageSource.gallery);
+                    setState(() {});
+                    // chooseLocation(context);
+                  },
+                  child: const Icon(Icons.photo_outlined),
+                )
+              ]),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CustomScrollView(
@@ -62,12 +93,13 @@ class _PostState extends State<Post> {
                             ),
                             InkWell(
                               onTap: () async {
+                                print(profile);
                                 if (controller.text.isNotEmpty ||
                                     pickedImage != null) {
                                   var res = await PostMethods().addPost(
-                                    uid: Uuid().v1(),
-                                    username: '@meg',
-                                    profileImg: 'profileImg',
+                                    uid: profile['uid'],
+                                    username: profile['username'],
+                                    profileImg: profile['photoUrl'] ?? '',
                                     text: controller.text,
                                     file: pickedImage!.readAsBytesSync(),
                                   );
@@ -76,8 +108,9 @@ class _PostState extends State<Post> {
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Home()));
+                                            builder: (context) => const Home(),
+                                            settings: RouteSettings(
+                                                arguments: profile)));
                                   }
                                 }
                               },

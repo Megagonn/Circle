@@ -48,11 +48,12 @@ class FireAuth {
         'photoUrl': image != null ? downloadedImage : userImage,
         'followings': [],
         'followers': [],
+        'posts': [],
         'bio': bio,
         'uid': uid,
         'username': username,
-        'firstName': username,
-        'lastName': ''
+        'firstName': firstName,
+        'lastName': lastName,
       });
 
       res = 'success';
@@ -63,19 +64,31 @@ class FireAuth {
     return res;
   }
 
-  Future<String> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<Map> login(
+      {required String email, required String password}) async {
     String res = 'error';
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential credential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       res = 'success';
+      print(credential.user);
     } on FirebaseAuthException catch (e) {
       res = e.toString();
     }
 
-    return res;
+    Map<String, dynamic> profile = {};
+    await _store.collection('users').get().then((value) {
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> userDetails =
+          value.docs;
+      // ignore: avoid_function_literals_in_foreach_calls
+      // print(userDetails);
+      Iterable<QueryDocumentSnapshot<Map<String, dynamic>>> res =
+          userDetails.where((data) => email == data.data()['email']);
+      profile = res.first.data();
+      print(res.first.data());
+    });
+
+    return {'res' : res, 'profile' : profile};
   }
 
   signInWithGoogle() async {
@@ -109,18 +122,23 @@ class FireAuth {
   }
 
   convert(url, context) {
-    ImageProvider provider = NetworkImage(url);
-    provider.obtainKey(createLocalImageConfiguration(context)).then((key) {
-      // ignore: invalid_use_of_protected_member
-      provider.load(key, (bytes,
-          {allowUpscaling = true, cacheHeight = 100, cacheWidth = 100}) {
-        return instantiateImageCodec(bytes);
+    if (url != null) {
+      ImageProvider provider = NetworkImage(url);
+      provider.obtainKey(createLocalImageConfiguration(context)).then((key) {
+        // ignore: invalid_use_of_protected_member
+        provider.load(key, (bytes,
+            {allowUpscaling = true, cacheHeight = 100, cacheWidth = 100}) {
+          return instantiateImageCodec(bytes);
+        });
       });
-    });
+    } else {
+      return '';
+    }
   }
 
   signupWithGoogle(context) async {
     var response;
+    var userDetails = {};
     if (kIsWeb) {
       GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
       _googleAuthProvider
@@ -140,8 +158,16 @@ class FireAuth {
         firstName: user.displayName!,
         lastName: '',
         uid: const Uuid().v1(),
-        image: imgUrl,
+        image: imgUrl ?? Uint8List(1),
       );
+      userDetails.addAll({
+        'username': '@${user.displayName}',
+        'firstName': user.displayName!,
+        'lastName': '',
+        'dp': user.photoURL,
+        'followers': [],
+        'following': [],
+      });
     } else {
       GoogleSignInAccount? _googleSignIn = await GoogleSignIn().signIn();
       var user = _googleSignIn;

@@ -7,9 +7,10 @@ class Post {
   final String profileImage;
   final List like;
   final List comment;
+  final List repost;
   final DateTime dateTime;
 
-  Post({
+  Post( {required this.repost,
     required this.dateTime,
     required this.text,
     required this.uid,
@@ -45,7 +46,7 @@ class Post {
       profileImage: map['profileImg'],
       like: map['likes'],
       comment: map['comment'],
-      dateTime: map['date'],
+      dateTime: map['date'], repost: map['repost'],
     );
   }
 }

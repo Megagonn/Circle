@@ -86,13 +86,18 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                       label: 'Login',
                       onPress: () async {
                         var res = await FireAuth().login(
-                            email: emailController.text,
-                            password: passwordController.text);
-                        if (res == 'success') {
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                        if (res['res'] == 'success') {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Home()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Home(),
+                              settings:
+                                  RouteSettings(arguments: res['profile']),
+                            ),
+                          );
                         }
                       },
                       fontWeight: FontWeight.w600,
@@ -108,10 +113,10 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                       TextButton(
                         onPressed: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SignUpWithEmail()),);
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpWithEmail()),
+                          );
                         },
                         child: const Text(
                           "Sign Up.",

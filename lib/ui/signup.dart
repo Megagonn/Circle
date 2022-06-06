@@ -85,8 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                 SnackBar(
-                                  content: Text(res.toString()),
+                                 const SnackBar(
+                                  content: Text('email already exist'),
                                 ),
                               );
                             }

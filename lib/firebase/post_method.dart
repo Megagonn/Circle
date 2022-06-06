@@ -43,6 +43,7 @@ class PostMethods {
           postURL: postUrl ?? '',
           profileImage: profileImg,
           like: [],
+          repost: [],
           comment: []);
 
       await _firestore.collection('posts').doc(postId).set(post.toJson());

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twit/ui/profile.dart';
 
 /// Home page drawer returning a [Drawer]
-drawer(BuildContext context) {
+drawer(BuildContext context, Map map) {
   // print('object');
   return SizedBox(
     child: Drawer(
@@ -12,16 +12,16 @@ drawer(BuildContext context) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: const BoxDecoration(color: Colors.white),
             currentAccountPicture: const CircleAvatar(
               backgroundImage: AssetImage('assets/img2.jpeg'),
             ),
             accountName: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Name Name',
-                  style: TextStyle(
+                 Text(
+                  map['firstName'] + map['lastName'],
+                  style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Colors.grey,
                       fontSize: 20),
@@ -35,9 +35,23 @@ drawer(BuildContext context) {
                 ),
               ],
             ),
-            accountEmail: const Text(
-              '@name',
-              style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey),
+            accountEmail: Padding(
+              padding: const EdgeInsets.only(right: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                   Expanded(
+                    flex: 2,
+                    child: Text(
+                                '@${map['lastName']}',
+                                style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),
+                              ),
+                  ),
+                  Text.rich(TextSpan(text: "Followers: ${map['followers'].length}", style:  TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),)),
+                  const SizedBox(width: 15,),
+                  Text.rich(TextSpan(text: "Following: ${map['followings'].length}", style:  TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),)),
+                ],
+              ),
             ),
           ),
 

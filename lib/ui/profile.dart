@@ -1,11 +1,11 @@
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/utilities/circlepost.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({Key? key, required this.map}) : super(key: key);
+  final Map map;
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -13,17 +13,26 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   ScrollController controller = ScrollController();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   // late TabController tabcontroller;
+  Future future() async {
+    var response =
+        await firestore.collection('users').doc(widget.map['uid']).get();
+    print(response.data()!['posts']);
+    return response.data()!['posts'];
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    future();
     // tabcontroller = TabController(length: 3, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
+    var profile = widget.map;
     return Scaffold(
       body: SafeArea(
         child: NestedScrollView(
@@ -98,9 +107,11 @@ class _ProfileState extends State<Profile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Rasheed Yusuff', //name of user
-                            style: TextStyle(
+                          Text(
+                            profile['firstName'] + ' ' + profile['lastName'],
+
+                            ///name of user
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
                             ),
@@ -116,9 +127,11 @@ class _ProfileState extends State<Profile> {
                         ],
                       ),
                     ),
-                    const Text('@Yusuff__rasheed'), //nick of user
-                    const Text(
-                      "|Flutter dev.|| Backend dev. || Human anatomy, (in view)|| Hult prize '21 participant",
+                    Text(profile['username']),
+
+                    /// nick of user
+                    Text(
+                      profile['bio'],
                       softWrap: true,
                     ), // Bio
                     Row(
@@ -153,31 +166,29 @@ class _ProfileState extends State<Profile> {
                     ),
                     Row(
                       children: [
-                        Row(
-                          children: const [
-                            Text('103'),
-                            Text('Following'),
-                          ],
+                        Text.rich(
+                          TextSpan(
+                            text: 'Following: ${profile['following'] ?? 0}',
+                          ),
                         ),
-                        Row(
-                          children: const [
-                            Text('103'),
-                            Text('Followers'),
-                          ],
+                        Text.rich(
+                          TextSpan(
+                            text: 'Follower: ${profile['follower'] ?? 0}',
+                          ),
                         ),
                       ],
                     ),
                     const DefaultTabController(
                       length: 1,
                       child: TabBar(
-                          padding: EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 14, horizontal: 8),
                           labelColor: Colors.blueAccent,
                           // indicatorPadding: EdgeInsets.all(8),
 
                           isScrollable: true,
                           tabs: [
                             Text('Posts'),
-                            
                           ]),
                     )
                   ],
@@ -185,7 +196,7 @@ class _ProfileState extends State<Profile> {
               ),
             ];
           },
-          body: const SingleChildScrollView(
+          body: SingleChildScrollView(
             child: SizedBox(
               height: double.maxFinite,
               child: DefaultTabController(
@@ -193,7 +204,25 @@ class _ProfileState extends State<Profile> {
                 child: TabBarView(
                     // controller: controller,
                     children: [
-                      CircleCard(),
+                      // CircleCard(),
+                      FutureBuilder(
+                          future: future(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<dynamic> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator.adaptive();
+                            } else {
+                              List data = snapshot.data;
+                             return ListView.builder(
+                               physics: const ScrollPhysics(),
+                                itemCount: data.length,
+                                itemBuilder: (context, index) {
+                                return const CircleCard();
+                              });
+                            }
+                            // return const SizedBox.shrink();
+                          })
                       // CircleCard()
                       // Text('data'),
                       // Text('data'),

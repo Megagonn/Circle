@@ -142,7 +142,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                           lastName: lastNameController.text,
                           password: passwordController.text,
                           username: '@${firstNameController.text}', 
-                          uid: const Uuid().v1(),
+                          uid: const Uuid().v1(), country: '', website: '',
                         );
                         ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(content: Text(res)));

@@ -22,9 +22,12 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const Post(), settings: RouteSettings(
-                arguments: profile,
-              )));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const Post(),
+                  settings: RouteSettings(
+                    arguments: profile,
+                  )));
         },
         child: const Icon(Icons.add),
       ),
@@ -38,7 +41,9 @@ class _HomeState extends State<Home> {
               leading: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    drawer(context, profile);
+                  },
                   child: const CircleAvatar(
                     backgroundImage: AssetImage('assets/img2.jpeg'),
                     radius: 14,

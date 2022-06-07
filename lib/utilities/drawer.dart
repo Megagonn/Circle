@@ -20,7 +20,7 @@ drawer(BuildContext context, Map map) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                  Text(
-                  map['firstName'] + map['lastName'],
+                  map['firstName'] + ' ' + map['lastName'],
                   style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       color: Colors.grey,
@@ -62,7 +62,7 @@ drawer(BuildContext context, Map map) {
           // ),
           Column(
             children: [
-              drawerLink(context, Icons.person_outline_outlined, 'Profile', const Profile()),
+              drawerLink(context, Icons.person_outline_outlined, 'Profile', Profile(map: map,)),
               drawerLink(context, Icons.list_alt_outlined, 'Lists', ''),
               drawerLink(context, Icons.topic_outlined, 'Topics', ''),
               drawerLink(context, Icons.bookmark_border_outlined, 'Bookmarks', ''),

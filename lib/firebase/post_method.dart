@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:twit/model/post.dart';
 import 'package:uuid/uuid.dart';
 
@@ -47,6 +48,16 @@ class PostMethods {
           comment: []);
 
       await _firestore.collection('posts').doc(postId).set(post.toJson());
+      try {
+        var previousPost = await _firestore.collection('users').doc(uid).get();
+        var allPreviousPost = previousPost.data()!['posts'];
+        await _firestore.collection('users').doc(uid).update({
+          'posts': [...allPreviousPost, (post.toJson())]
+        });
+      } on FirebaseException catch (e) {
+        // TODO
+        print(e.toString());
+      }
 
       res = 'success';
     } catch (e) {

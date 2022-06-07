@@ -21,6 +21,8 @@ class FireAuth {
     required String username,
     required String firstName,
     required String lastName,
+    required String country,
+    required String website,
     required String uid,
     Uint8List? image,
     String bio = '',
@@ -158,7 +160,7 @@ class FireAuth {
         firstName: user.displayName!,
         lastName: '',
         uid: const Uuid().v1(),
-        image: imgUrl ?? Uint8List(1),
+        image: imgUrl ?? Uint8List(1), country: '', website: '',
       );
       userDetails.addAll({
         'username': '@${user.displayName}',
@@ -179,7 +181,7 @@ class FireAuth {
         firstName: user.displayName!,
         lastName: '',
         uid: const Uuid().v1(),
-        image: imgUrl,
+        image: imgUrl, country: '', website: '',
       );
     }
     return response;

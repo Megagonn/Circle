@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/ui/newpost.dart';
 import 'package:twit/utilities/circlepost.dart';
 import 'package:twit/utilities/drawer.dart';
 import 'package:twit/utilities/ui.utl.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -12,6 +14,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  postStream() async {
+    var posts = [];
+    var getPost = await firestore.collection('posts').get();
+    var postGotten = getPost.docs;
+    postGotten.forEach((element) {
+      posts.add(element.data());
+    });
+    return posts;
+    // print('this is posts $posts');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    postStream();
+  }
+
   @override
   Widget build(BuildContext context) {
     Map profile = ModalRoute.of(context)!.settings.arguments as Map;
@@ -44,10 +65,26 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     drawer(context, profile);
                   },
-                  child: const CircleAvatar(
-                    backgroundImage: AssetImage('assets/img2.jpeg'),
+                  child: profile['profileImg'] == '' || profile['profileImg'] == null
+                    ?const CircleAvatar(
+                      child:  Icon(
+                        Icons.person_outline,
+                        size: 34,
+                        color: Colors.white,
+                      ),
+                    ): CircleAvatar(
+                    backgroundImage: NetworkImage(profile['profileImg']),
                     radius: 14,
                   ),
+                  // profile['profileImg'] == '' || profile['profileImg'] == null
+                  //   ? const Icon(
+                  //     Icons.person_outline,
+                  //     size: 34,
+                  //     color: Colors.grey,
+                  //   ): CircleAvatar(
+                  //   backgroundImage: NetworkImage(profile['profileImg']),
+                  //   radius: 14,
+                  // ),
                 ),
               ),
               centerTitle: true,
@@ -66,16 +103,52 @@ class _HomeState extends State<Home> {
             ),
             SliverList(
                 delegate: SliverChildListDelegate([
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
-              const CircleCard(),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              // const CircleCard(post: {},),
+              FutureBuilder(
+                future: postStream(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child: CircularProgressIndicator.adaptive());
+                  } else {
+                    if (snapshot.hasData) {
+                      List post = snapshot.data;
+                      print(post);
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        child: LiquidPullToRefresh(
+                          borderWidth: 1,
+                          springAnimationDurationInMilliseconds: 600,
+                          showChildOpacityTransition: false,
+                          onRefresh: () {
+                            setState(() {});
+                            return postStream();
+                          },
+                          child: ListView.builder(
+                            itemCount: post.length,
+                            itemBuilder: (context, index) {
+                              return CircleCard(post: post[index]);
+                            },
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const Center(child: Text("No Post"));
+                    }
+                  }
+                  // return const Center(child: Text('Something went wrong...\nStay put'));
+                },
+              )
             ]))
           ],
         ),

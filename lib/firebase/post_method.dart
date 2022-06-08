@@ -15,59 +15,78 @@ class PostMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  Future<String> addPost(
-      {String text = '',
-      Uint8List? file,
-      required String uid,
-      required String username,
-      required String profileImg}) async {
+  Future<String> addPost({
+    String text = '',
+    var file,
+    required String uid,
+    required String username,
+    required String firstName,
+    required String lastName,
+    required String profileImg,
+  }) async {
     String res = "some error occur";
     String postId = const Uuid().v1();
+    var uint8list;
+    if (file == '' || file == null) {
+      uint8list = '';
+    } else {
+      uint8list = file.readAsBytesSync();
+    }
     try {
       String? postUrl;
-      if (file != null) {
-        Reference imageRef =
-            _storage.ref().child('circleImages').child('posts');
+      if (file == null || file == '') {
+        print('no file picked');
+      } else {
+        print('a was file picked');
+        Reference imageRef = _storage.ref().child('circleImages').child(postId);
 
-        UploadTask upload = imageRef.putData(file);
+        UploadTask upload = imageRef.putData(uint8list);
         TaskSnapshot snapShot = await upload;
 
         postUrl = await snapShot.ref.getDownloadURL();
       }
 
       Post post = Post(
-          text: text,
-          uid: uid,
-          postId: postId,
-          username: username,
-          dateTime: DateTime.now(),
-          postURL: postUrl ?? '',
-          profileImage: profileImg,
-          like: [],
-          repost: [],
-          comment: []);
+        text: text,
+        uid: uid,
+        postId: postId,
+        username: username,
+        dateTime: DateTime.now(),
+        postURL: postUrl ?? '',
+        profileImage: profileImg,
+        like: [],
+        repost: [],
+        comment: [],
+        firstName: firstName,
+        lastName: lastName,
+      );
 
       await _firestore.collection('posts').doc(postId).set(post.toJson());
-      try {
-        var previousPost = await _firestore.collection('users').doc(uid).get();
-        var allPreviousPost = previousPost.data()!['posts'];
-        await _firestore.collection('users').doc(uid).update({
-          'posts': [...allPreviousPost, (post.toJson())]
-        });
-      } on FirebaseException catch (e) {
-        // TODO
-        print(e.toString());
-      }
+
+      /// Adding each user's post to the each user's document.
+      // try {
+      //   Iterable<QueryDocumentSnapshot<Map<String, dynamic>>> posts = [];
+      //   await _firestore.collection('posts').get().then((value) {
+      //     List<QueryDocumentSnapshot<Map<String, dynamic>>> userPosts =
+      //         value.docs;
+      //     posts = userPosts.where((data) => uid == data.data()['uid']);
+      //   });
+      //   await _firestore.collection('users').doc(uid).update({'posts': posts});
+      // } on FirebaseException catch (e) {
+      //   // TODO
+      //   print(e.toString());
+      // }
 
       res = 'success';
     } catch (e) {
+      res = "some error occured!";
       return e.toString();
     }
-
+    print('res is function is $res');
     return res;
   }
 
-  Future<Map<String, dynamic>> readPosts() async {
+  Future<List<dynamic>> readPosts() async {
     QuerySnapshot<Map<String, dynamic>> postList =
         await _firestore.collection('posts').get();
     var allPost = [...postList.docs];
@@ -78,13 +97,13 @@ class PostMethods {
     // print(refinedpost);
     // print(refinedpost.length);
 
-    Uint8List? postImages =
-        await _storage.ref().child('firebaseImage').child('post').getData();
+    // Uint8List? postImages =
+    //     await _storage.ref().child('firebaseImage').child('post').getData();
 
     // print(postImages);
 
     ///{uid: 013d0520-e0c8-11ec-a8f8-e7f9205c2f2a, postUrl: https://firebasestorage.googleapis.com/v0/b/circles-762a7.appspot.com/o/firebaseImage%2Fpost?alt=media&token=8ebcd277-242e-4b97-9863-f815ec472aaa, comment: [], text: This is my first post. , postId: 013d5340-e0c8-11ec-8b94-41714da1f2f0, userName: @meg, profileImg: profileImg, likes: []}
-    return {'postList': refinedpost, 'images': postImages};
+    return refinedpost;
   }
 
   Future<void> likePost(String postId, String uid, List likes) async {

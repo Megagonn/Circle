@@ -19,7 +19,7 @@ drawer(BuildContext context, Map map) {
             accountName: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(
+                Text(
                   map['firstName'] + ' ' + map['lastName'],
                   style: const TextStyle(
                       fontWeight: FontWeight.w700,
@@ -40,16 +40,30 @@ drawer(BuildContext context, Map map) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                   Expanded(
+                  Expanded(
                     flex: 2,
                     child: Text(
-                                '@${map['lastName']}',
-                                style: TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),
-                              ),
+                      '@${map['lastName']}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade700),
+                    ),
                   ),
-                  Text.rich(TextSpan(text: "Followers: ${map['followers'].length}", style:  TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),)),
-                  const SizedBox(width: 15,),
-                  Text.rich(TextSpan(text: "Following: ${map['followings'].length}", style:  TextStyle(fontWeight: FontWeight.w400, color: Colors.grey.shade700),)),
+                  Text.rich(TextSpan(
+                    text: "Followers: ${map['followers'].length}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade700),
+                  )),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  Text.rich(TextSpan(
+                    text: "Following: ${map['followings'].length}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey.shade700),
+                  )),
                 ],
               ),
             ),
@@ -62,13 +76,21 @@ drawer(BuildContext context, Map map) {
           // ),
           Column(
             children: [
-              drawerLink(context, Icons.person_outline_outlined, 'Profile', Profile(map: map,)),
+              drawerLink(
+                  context,
+                  Icons.person_outline_outlined,
+                  'Profile',
+                  Profile(
+                    map: map,
+                  )),
               drawerLink(context, Icons.list_alt_outlined, 'Lists', ''),
               drawerLink(context, Icons.topic_outlined, 'Topics', ''),
-              drawerLink(context, Icons.bookmark_border_outlined, 'Bookmarks', ''),
-              drawerLink(context, Icons.stacked_line_chart_outlined, 'Moments', ''),
               drawerLink(
-                  context, Icons.person_add_alt_outlined, 'Follower request', ''),
+                  context, Icons.bookmark_border_outlined, 'Bookmarks', ''),
+              drawerLink(
+                  context, Icons.stacked_line_chart_outlined, 'Moments', ''),
+              drawerLink(context, Icons.person_add_alt_outlined,
+                  'Follower request', ''),
             ],
           ),
           const Divider(
@@ -85,7 +107,8 @@ drawer(BuildContext context, Map map) {
 drawerLink(BuildContext context, IconData iconData, String label, route) {
   return InkWell(
     onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> route));
+      popContext(context);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     },
     child: Container(
       width: MediaQuery.of(context).size.width / 2,
@@ -102,4 +125,8 @@ drawerLink(BuildContext context, IconData iconData, String label, route) {
       ),
     ),
   );
+}
+
+popContext(context) {
+  Navigator.pop(context);
 }

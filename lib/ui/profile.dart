@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/utilities/circlepost.dart';
 import 'package:twit/utilities/ui.utl.dart';
@@ -15,18 +16,49 @@ class _ProfileState extends State<Profile> {
   ScrollController controller = ScrollController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   // late TabController tabcontroller;
-  Future future() async {
+  Future userPost() async {
+    /// Adding each user's post to the each user's document.
+      List<Map<String, dynamic>> listOfUserPost = [];
+    try {
+      // var previousPost = await _firestore.collection('users').doc(uid).get();
+      // var allPreviousPost = previousPost.data()!['posts'];
+      // await _firestore.collection('users').doc(uid).update({
+      //   'posts': [...allPreviousPost, (post.toJson())]
+      // });
+
+      Iterable<QueryDocumentSnapshot<Map<String, dynamic>>> posts = [];
+      await firestore.collection('posts').get().then((value) {
+        List<QueryDocumentSnapshot<Map<String, dynamic>>> userPosts =
+            value.docs;
+        posts =
+            userPosts.where((data) => widget.map['uid'] == data.data()['uid']);
+        posts.toList().forEach((element) {
+          listOfUserPost.add(element.data());
+        });
+      });
+      await firestore
+          .collection('users')
+          .doc(widget.map['uid'])
+          .update({'posts': listOfUserPost});
+    } on FirebaseException catch (e) {
+      // ignore: todo
+      // TODO
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
     var response =
         await firestore.collection('users').doc(widget.map['uid']).get();
-    print(response.data()!['posts']);
-    return response.data()!['posts'];
+    return listOfUserPost;
+    // print(response.data()!['posts']);
+    // return;
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    future();
+    userPost();
     // tabcontroller = TabController(length: 3, vsync: this);
   }
 
@@ -116,7 +148,7 @@ class _ProfileState extends State<Profile> {
                               fontSize: 22,
                             ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 50),
                           Flexible(
                               child: FlatBtn(
                             label: 'Edit profile',
@@ -173,7 +205,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         Text.rich(
                           TextSpan(
-                            text: 'Follower: ${profile['follower'] ?? 0}',
+                            text: '   Follower: ${profile['follower'] ?? 0}',
                           ),
                         ),
                       ],
@@ -198,7 +230,7 @@ class _ProfileState extends State<Profile> {
           },
           body: SingleChildScrollView(
             child: SizedBox(
-              height: double.maxFinite,
+              height: MediaQuery.of(context).size.height,
               child: DefaultTabController(
                 length: 1,
                 child: TabBarView(
@@ -206,20 +238,33 @@ class _ProfileState extends State<Profile> {
                     children: [
                       // CircleCard(),
                       FutureBuilder(
-                          future: future(),
+                          future: userPost(),
                           builder: (BuildContext context,
                               AsyncSnapshot<dynamic> snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(
+                                  child: CircularProgressIndicator.adaptive());
                             } else {
                               List data = snapshot.data;
-                             return ListView.builder(
-                               physics: const ScrollPhysics(),
-                                itemCount: data.length,
-                                itemBuilder: (context, index) {
-                                return const CircleCard();
-                              });
+                              return ListView.builder(
+                                  physics: const ScrollPhysics(),
+                                  itemCount: data.length,
+                                  itemBuilder: (context, index) {
+                                    if (data.isEmpty) {
+                                      return Center(
+                                        child: Text(
+                                          'You have not circulate any post yet.',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.cyan.shade700),
+                                        ),
+                                      );
+                                    }
+                                    return CircleCard(
+                                      post: widget.map,
+                                    );
+                                  });
                             }
                             // return const SizedBox.shrink();
                           })

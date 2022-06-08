@@ -6,11 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:twit/firebase/post_method.dart';
 import 'package:twit/ui/homepage.dart';
-import 'package:twit/utilities/imagepicker.dart';
-import 'package:twit/utilities/ui.utl.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:twit/utilities/imagepicker.dart';
+// import 'package:twit/utilities/ui.utl.dart';
+// import 'package:uuid/uuid.dart';
 
-File? pickedImage;
+var pickedImage;
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class _PostState extends State<Post> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    PostMethods().readPosts();
+    // PostMethods().readPosts();
   }
 
   @override
@@ -55,7 +55,10 @@ class _PostState extends State<Post> {
                     setState(() {});
                     // chooseLocation(context);
                   },
-                  child: const Icon(Icons.camera_outlined),
+                  child: const Icon(
+                    Icons.camera_outlined,
+                    size: 34,
+                  ),
                 ),
                 SizedBox(
                   width: 40,
@@ -68,7 +71,10 @@ class _PostState extends State<Post> {
                     setState(() {});
                     // chooseLocation(context);
                   },
-                  child: const Icon(Icons.photo_outlined),
+                  child: const Icon(
+                    Icons.photo_outlined,
+                    size: 34,
+                  ),
                 )
               ]),
         body: Padding(
@@ -93,7 +99,7 @@ class _PostState extends State<Post> {
                             ),
                             InkWell(
                               onTap: () async {
-                                print(profile);
+                                // print(profile);
                                 if (controller.text.isNotEmpty ||
                                     pickedImage != null) {
                                   var res = await PostMethods().addPost(
@@ -101,8 +107,11 @@ class _PostState extends State<Post> {
                                     username: profile['username'],
                                     profileImg: profile['photoUrl'] ?? '',
                                     text: controller.text,
-                                    file: pickedImage!.readAsBytesSync(),
+                                    file: pickedImage,
+                                    firstName: profile['firstName'],
+                                    lastName: profile['lastName'],
                                   );
+                                  print('res in newpost is $res');
                                   if (res == 'success') {
                                     pickedImage = null;
                                     Navigator.pushReplacement(

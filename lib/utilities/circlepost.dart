@@ -1,40 +1,65 @@
+import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:twit/firebase/post_method.dart';
+import 'package:twit/model/post.dart';
+import 'package:twit/utilities/ui.utl.dart';
 
 /// [CircleCard] is the post UI model.
 class CircleCard extends StatefulWidget {
-  const CircleCard({Key? key, required this.post}) : super(key: key);
+  const CircleCard({
+    Key? key,
+    required this.post,
+    required this.prof,
+  }) : super(
+          key: key,
+        );
   final Map post;
+  final Map prof;
 
   @override
   State<CircleCard> createState() => _CircleCardState();
 }
 
 class _CircleCardState extends State<CircleCard> {
+  TextEditingController controller = TextEditingController();
   Future<bool> onLikeButtonTapped(bool isLiked) async {
     /// send your request here
-    // final bool success= await sendRequest();
+    final bool success = await PostMethods().likePost(
+        widget.post['postId'], widget.post['uid'], widget.post['likes']);
 
     /// if failed, you can do nothing
-    // return success? !isLiked:isLiked;
+    return success ? !isLiked : isLiked;
 
-    return !isLiked;
+    // return !isLiked;
   }
 
   // int likeCount = 0;
   // int commentCount = 0;
   // int recirculateCount = 0;
 
-  bool commented = false;
-  bool recirculated = false;
   @override
   Widget build(BuildContext context) {
     Map post = widget.post;
+
+    List allLikes = post['likes'];
+    Map profile = widget.prof;
+    // print(profile);
+    bool commented = false;
+    bool liked = false;
+    bool recirculated = false;
+
+    allLikes.forEach((element) {
+      if (element == profile['uid']) {
+        liked = true;
+      }
+    });
+
     int likeCount = post['likes'].length;
     int commentCount = post['comment'].length;
     int recirculateCount = post['repost'].length;
-    // print(post['profileImg']); 
+    // print(post['profileImg']);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
       decoration: const BoxDecoration(
@@ -57,16 +82,16 @@ class _CircleCardState extends State<CircleCard> {
               children: [
                 post['profileImg'] == '' || post['profileImg'] == null
                     ? const Icon(
-                      Icons.person_outline,
-                      size: 34,
-                      color: Colors.grey,
-                    ): Padding(
+                        Icons.person_outline,
+                        size: 34,
+                        color: Colors.grey,
+                      )
+                    : Padding(
                         padding: const EdgeInsets.only(top: 0, right: 4),
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(post['profileImg']),
                         ),
                       ),
-                    
               ],
             ),
             Column(
@@ -99,12 +124,12 @@ class _CircleCardState extends State<CircleCard> {
                           flex: 2,
                           child: Text(
                             timeago.format(
-                              DateTime.tryParse(
-                                      post['date'].toDate().toString())!
-                                  .subtract(
-                                const Duration(minutes: 1),
-                              ), locale: 'en_short'
-                            ),
+                                DateTime.tryParse(
+                                        post['date'].toDate().toString())!
+                                    .subtract(
+                                  const Duration(minutes: 1),
+                                ),
+                                locale: 'en_short'),
                           ),
                         ),
                         // Expanded(
@@ -125,12 +150,15 @@ class _CircleCardState extends State<CircleCard> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: post['text'] == "" || post['text'] == null ? const SizedBox.shrink() : Text(
-                          post['text'],
-                        ),
+                        child: post['text'] == "" || post['text'] == null
+                            ? const SizedBox.shrink()
+                            : Text(
+                                post['text'],
+                              ),
                       ),
                       post['postUrl'] == '' || post['postUrl'] == null
-                          ? const SizedBox.shrink() : Container(
+                          ? const SizedBox.shrink()
+                          : Container(
                               margin: const EdgeInsets.only(top: 5),
                               width: MediaQuery.of(context).size.width,
                               height: 200,
@@ -142,39 +170,56 @@ class _CircleCardState extends State<CircleCard> {
                                     fit: BoxFit.cover,
                                   )),
                             ),
-                          
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ActionBtn(
                               iconData: Icons.comment_bank_outlined,
-                              onPressed: () {
-                                setState(() {
-                                  commented = !commented;
+                              onPressed: () async {
+                                // double height = 400;
+                                comment(context, controller, profile, post);
+                                // setState(() {
+                                  // commented = !commented;
                                   // commentCount++;
-                                  commented ? commentCount++ : commentCount--;
-                                });
+                                  // commented ? commentCount++ : commentCount--;
+                                // });
                               },
                               count: commentCount),
-                          ActionBtn(
-                              iconData: Icons.incomplete_circle_outlined,
-                              onPressed: () {
-                                setState(() {
-                                  recirculated = !recirculated;
-                                  // commentCount++;
-                                  recirculated
-                                      ? recirculateCount++
-                                      : recirculateCount--;
-                                });
-                              },
-                              count: recirculateCount),
-                          LikeButton(
-                              size: 24,
-                              countPostion: CountPostion.right,
-                              likeCount: 0,
-                              onTap: onLikeButtonTapped),
+                          // ActionBtn(
+                          //     iconData: Icons.incomplete_circle_outlined,
+                          //     onPressed: () {
+                          //       setState(() {
+                          //         recirculated = !recirculated;
+                          //         // commentCount++;
+                          //         recirculated
+                          //             ? recirculateCount++
+                          //             : recirculateCount--;
+                          //       });
+                          //     },
+                          //     count: recirculateCount),
+                          Row(
+                            children: [
+                              FavoriteButton(
+                                isFavorite: liked,
+                                valueChanged: (value) async {
+                                  setState(() async {
+                                    await PostMethods().likePost(post['postId'],
+                                        profile['uid'], post['likes']);
+                                    liked = !liked;
+                                    // !liked ? likeCount++ : likeCount--;
+                                  });
+                                },
+                                iconColor: Colors.redAccent.shade400,
+                                iconDisabledColor: Colors.grey,
+                                iconSize: 35,
+                              ),
+                              Text(likeCount.toString())
+                            ],
+                          ),
                           IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                
+                              },
                               icon: const Icon(Icons.share_outlined,
                                   size: 24, color: Colors.grey))
                         ],

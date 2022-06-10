@@ -262,7 +262,7 @@ class _ProfileState extends State<Profile> {
                                       );
                                     }
                                     return CircleCard(
-                                      post: widget.map,
+                                      post: data[index], prof: widget.map,
                                     );
                                   });
                             }

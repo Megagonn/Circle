@@ -27,8 +27,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auth_buttons: ^2.0.4
   cloud_firestore: ^3.1.16
   cupertino_icons: ^1.0.2
+  favorite_button: ^0.0.4
   firebase_auth: ^3.3.18
   firebase_core: ^1.17.0
   firebase_storage: ^10.2.16
@@ -39,6 +41,7 @@ dependencies:
   like_button: ^2.0.4
   liquid_pull_to_refresh: ^3.0.1
   rename: ^2.0.1
+  share_plus: ^4.0.7
   timeago: ^3.2.2
   uuid: ^3.0.6
 

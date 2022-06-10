@@ -65,17 +65,19 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     drawer(context, profile);
                   },
-                  child: profile['profileImg'] == '' || profile['profileImg'] == null
-                    ?const CircleAvatar(
-                      child:  Icon(
-                        Icons.person_outline,
-                        size: 34,
-                        color: Colors.white,
-                      ),
-                    ): CircleAvatar(
-                    backgroundImage: NetworkImage(profile['profileImg']),
-                    radius: 14,
-                  ),
+                  child: profile['profileImg'] == '' ||
+                          profile['profileImg'] == null
+                      ? const CircleAvatar(
+                          child: Icon(
+                            Icons.person_outline,
+                            size: 34,
+                            color: Colors.white,
+                          ),
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(profile['profileImg']),
+                          radius: 14,
+                        ),
                   // profile['profileImg'] == '' || profile['profileImg'] == null
                   //   ? const Icon(
                   //     Icons.person_outline,
@@ -123,7 +125,7 @@ class _HomeState extends State<Home> {
                   } else {
                     if (snapshot.hasData) {
                       List post = snapshot.data;
-                      print(post);
+                      // print(post);
                       return SizedBox(
                         height: MediaQuery.of(context).size.height,
                         child: LiquidPullToRefresh(
@@ -137,7 +139,10 @@ class _HomeState extends State<Home> {
                           child: ListView.builder(
                             itemCount: post.length,
                             itemBuilder: (context, index) {
-                              return CircleCard(post: post[index]);
+                              return CircleCard(
+                                post: post[index],
+                                prof: profile,
+                              );
                             },
                           ),
                         ),

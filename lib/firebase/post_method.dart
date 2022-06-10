@@ -106,7 +106,9 @@ class PostMethods {
     return refinedpost;
   }
 
-  Future<void> likePost(String postId, String uid, List likes) async {
+  Future<bool> likePost(String postId, String uid, List likes) async {
+    bool liked = false;
+    print(likes);
     try {
       if (likes.contains(uid)) {
         await _firestore.collection('posts').doc(postId).update({
@@ -117,34 +119,69 @@ class PostMethods {
           "likes": FieldValue.arrayUnion([uid])
         });
       }
+      liked = true;
     } catch (e) {
+      liked = false;
       print(e.toString());
     }
+    return liked;
   }
 
   Future<void> postComment(String postId, String text, String uid, String name,
-      String profilePic) async {
+      String userName, String profilePic) async {
     try {
       String commentId = const Uuid().v1();
       if (text.isNotEmpty) {
-        await _firestore
-            .collection("posts")
-            .doc(postId)
-            .collection('comments')
-            .doc(commentId)
-            .set({
-          "profilePic": profilePic,
-          "name": name,
-          "uid": uid,
-          "text": text,
-          "commentId": commentId,
-          "datePublished": DateTime.now()
+        var post = await _firestore.collection("posts").doc(postId).get();
+        List previousComment = post.data()!['comment'];
+        await _firestore.collection("posts").doc(postId).update({
+          'comment': [
+            ...previousComment,
+            {
+              "profilePic": profilePic,
+              "name": name,
+              "userName": userName,
+              "uid": uid,
+              "text": text,
+              "commentId": commentId,
+              "datePublished": DateTime.now()
+            }
+          ]
         });
       }
     } catch (e) {
       print(e.toString());
     }
   }
+
+  Future<dynamic> readpostComments(postId) async {
+    var allposts = await _firestore.collection('posts').get();
+    var post = allposts.docs.where((element) => element.id == postId).first;
+    var comments = post.data()['comment'];
+    // print(post);
+    // print(comments);
+    return comments;
+  }
+  // Future<dynamic> readpostComments(postId) async {
+  //   var list = [];
+  //   Map? map = {};
+  //   var currentPost = _firestore
+  //       .collection('posts')
+  //       .doc(postId)
+  //       .snapshots()
+  //       .forEach((element) {
+  //     map = element.data();
+  //   list = map!['comment'];
+  //   });
+  //   // var currentPostComments = currentPost.single;
+  //   // currentPostComments.then((value) {
+  //   //   list = [...value.data()!['comment']];
+  //   //   print('this is value :${value.data()!['comment']}');
+  //   //   // return value;
+  //   print(list);
+  //   return list;
+  //   // });
+  // }
 
   Future<void> deletePost(String postId) async {
     try {

@@ -1,6 +1,7 @@
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:twit/firebase/post_method.dart';
 import 'package:twit/model/post.dart';
@@ -179,9 +180,9 @@ class _CircleCardState extends State<CircleCard> {
                                 // double height = 400;
                                 comment(context, controller, profile, post);
                                 // setState(() {
-                                  // commented = !commented;
-                                  // commentCount++;
-                                  // commented ? commentCount++ : commentCount--;
+                                // commented = !commented;
+                                // commentCount++;
+                                // commented ? commentCount++ : commentCount--;
                                 // });
                               },
                               count: commentCount),
@@ -218,7 +219,7 @@ class _CircleCardState extends State<CircleCard> {
                           ),
                           IconButton(
                               onPressed: () {
-                                
+                                Share.share(post['text']);
                               },
                               icon: const Icon(Icons.share_outlined,
                                   size: 24, color: Colors.grey))

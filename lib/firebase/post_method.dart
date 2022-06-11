@@ -247,6 +247,13 @@ class PostMethods {
   Future<void> signOut() async {
     await _auth.signOut();
   }
+
+  Future<dynamic> allChats(cid) {
+    var chats =
+        FirebaseFirestore.instance.collection('chats').snapshots();
+    var usersChat = chats.first;
+    return usersChat.then((value) => value.docs.first.data());
+  }
 }
 
 

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/ui/homepage.dart';
+import 'package:twit/ui/loginwithemail.dart';
 import 'package:twit/ui/newpost.dart';
 import 'package:twit/ui/pageview.dart';
 import 'package:twit/ui/profile.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SignUpPage(),
+      home: const LoginWithEmail(),
     );
   }
 }

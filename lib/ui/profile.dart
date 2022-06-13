@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:twit/ui/editprofile.dart';
 import 'package:twit/utilities/circlepost.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
@@ -18,7 +19,7 @@ class _ProfileState extends State<Profile> {
   // late TabController tabcontroller;
   Future userPost() async {
     /// Adding each user's post to the each user's document.
-      List<Map<String, dynamic>> listOfUserPost = [];
+    List<Map<String, dynamic>> listOfUserPost = [];
     try {
       // var previousPost = await _firestore.collection('users').doc(uid).get();
       // var allPreviousPost = previousPost.data()!['posts'];
@@ -152,7 +153,12 @@ class _ProfileState extends State<Profile> {
                           Flexible(
                               child: FlatBtn(
                             label: 'Edit profile',
-                            onPress: () {},
+                            onPress: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Edit()));
+                            },
                             labelColor: Colors.grey,
                             color: Colors.white,
                           )),
@@ -192,7 +198,10 @@ class _ProfileState extends State<Profile> {
                     ),
                     Row(
                       children: const [
-                        Icon(Icons.auto_awesome),
+                        Icon(
+                          Icons.auto_awesome,
+                          size: 20,
+                        ),
                         Text('August 7, 1997'),
                       ],
                     ),
@@ -262,7 +271,8 @@ class _ProfileState extends State<Profile> {
                                       );
                                     }
                                     return CircleCard(
-                                      post: data[index], prof: widget.map,
+                                      post: data[index],
+                                      prof: widget.map,
                                     );
                                   });
                             }

@@ -114,6 +114,17 @@ comment(context, controller, profile, post) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: 5,
+                  width: MediaQuery.of(context).size.width / 2,
+                  margin: const EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.black),
+                ),
+              ),
               const Text(
                 'Comment:',
                 style: TextStyle(
@@ -203,36 +214,51 @@ allComments(context, post, profile) async {
           height: MediaQuery.of(context).size.height - 100,
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(15)),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                'Comment:',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  height: 5,
+                  width: MediaQuery.of(context).size.width / 2,
+                  margin: const EdgeInsets.only(bottom: 14, top: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Colors.black),
                 ),
               ),
-            ),
-            CircleCard(post: post, prof: profile),
-            const SizedBox(height: 4,),
-            SingleChildScrollView(
-              child: SizedBox(
-                height: 300,
-                child: ListView.builder(
-                  itemCount: comments.length,
-                  itemBuilder: ((context, index) {
-                    print(comments[0]);
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: CommentCard(comment: comments[index]),
-                    );
-                  }),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Comment:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
                 ),
               ),
-            )
-          ]),
+              CircleCard(post: post, prof: profile),
+              const SizedBox(
+                height: 4,
+              ),
+              SingleChildScrollView(
+                child: SizedBox(
+                  height: 300,
+                  child: ListView.builder(
+                    itemCount: comments.length,
+                    itemBuilder: ((context, index) {
+                      print(comments[0]);
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: CommentCard(comment: comments[index]),
+                      );
+                    }),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       });
 }
@@ -285,6 +311,9 @@ class CommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('i d=got here');
+    print(comment['profilePic']);
+    print(comment);
     return Container(
         width: MediaQuery.of(context).size.width,
         child: Row(

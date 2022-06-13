@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({ Key? key }) : super(key: key);
+  const ChatPage({Key? key}) : super(key: key);
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -18,14 +18,16 @@ class _ChatPageState extends State<ChatPage> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                decoration:  const BoxDecoration(
-                  border: Border(bottom: BorderSide(color: Colors.grey)),
-                  boxShadow: [
-                    BoxShadow(offset: Offset(1, 0), blurStyle: BlurStyle.outer, color: Colors.grey)
-                  ]
-                ),
+                decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey)),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(1, 0),
+                          blurStyle: BlurStyle.outer,
+                          color: Colors.grey)
+                    ]),
                 child: Row(
-                  children:  [
+                  children: [
                     Row(
                       children: const [
                         BackButton(),
@@ -46,21 +48,70 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ),
               SingleChildScrollView(
-                child: SizedBox(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                   height: MediaQuery.of(context).size.height - 120,
                   child: ListView(
-                    children:  [
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Container(
+                          // padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.all(3),
+                          width: 2 * MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey.shade500,
+                          ),
+                          child: const ListTile(
+                            title: Text(
+                              'Blah blah blah Blah blah blah Blah blah blah',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            subtitle: Align(
+                              child: Text('09:22pm'),
+                              alignment: Alignment.bottomRight,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                          // padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.all(3),
+                          width: 2 * MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey.shade500,
+                          ),
+                          child: const ListTile(
+                            title: Text(
+                              'Blah blah blah',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            subtitle: Align(
+                              child: Text('09:22pm'),
+                              alignment: Alignment.bottomRight,
+                            ),
+                          ),
+                        ),
+                      ),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           margin: const EdgeInsets.all(3),
-                          width: 2* MediaQuery.of(context).size.width/3,
+                          width: 2 * MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.grey.shade500,
                           ),
-                          child: Text('Blah blah blah Blah blah blah Blah blah blah', style: TextStyle(color: Colors.white),),
+                          child: Text(
+                            'Blah blah blah',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                       Align(
@@ -68,56 +119,47 @@ class _ChatPageState extends State<ChatPage> {
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           margin: const EdgeInsets.all(3),
-                          width: 2* MediaQuery.of(context).size.width/3,
+                          width: 2 * MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.grey.shade500,
                           ),
-                          child: Text('Blah blah blah'),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.lightGreenAccent,
+                          child: Text(
+                            'Blah blah blah',
+                            style: TextStyle(color: Colors.white),
                           ),
-                          child: Text('Blah blah blah'),
                         ),
                       ),
                       Align(
                         alignment: Alignment.topRight,
                         child: Container(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.all(3),
+                          width: 2 * MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.lightGreenAccent,
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey.shade500,
                           ),
-                          child: Text('Blah blah blah'),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.lightGreenAccent,
+                          child: Text(
+                            'Blah blah blah',
+                            style: TextStyle(color: Colors.white),
                           ),
-                          child: Text('Blah blah blah'),
                         ),
                       ),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Container(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.all(3),
+                          width: 2 * MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.lightGreenAccent,
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.grey.shade500,
                           ),
-                          child: Text('Blah blah blah'),
+                          child: Text(
+                            'Blah blah blah',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ],

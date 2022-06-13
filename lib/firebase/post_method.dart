@@ -162,7 +162,17 @@ class PostMethods {
     // print(comments);
     return comments;
   }
-  // Future<dynamic> readpostComments(postId) async {
+
+  Future<dynamic> updateProfile(String uid, Map<String, Object> data) async {
+    var updated = 'success';
+    try {
+      await _firestore.collection('users').doc(uid).update(data);
+    } on Exception catch (e) {
+      print(e.toString());
+      updated = "error";
+    }
+    return updated;
+  }
   //   var list = [];
   //   Map? map = {};
   //   var currentPost = _firestore
@@ -249,8 +259,7 @@ class PostMethods {
   }
 
   Future<dynamic> allChats(cid) {
-    var chats =
-        FirebaseFirestore.instance.collection('chats').snapshots();
+    var chats = FirebaseFirestore.instance.collection('chats').snapshots();
     var usersChat = chats.first;
     return usersChat.then((value) => value.docs.first.data());
   }

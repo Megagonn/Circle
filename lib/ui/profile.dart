@@ -157,7 +157,7 @@ class _ProfileState extends State<Profile> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const Edit()));
+                                      builder: (context) => Edit(map: profile)));
                             },
                             labelColor: Colors.grey,
                             color: Colors.white,

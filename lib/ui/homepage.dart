@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
     postGotten.forEach((element) {
       posts.add(element.data());
     });
+    // await 
     return posts;
     // print('this is posts $posts');
   }
@@ -65,8 +66,8 @@ class _HomeState extends State<Home> {
                   onTap: () {
                     drawer(context, profile);
                   },
-                  child: profile['profileImg'] == '' ||
-                          profile['profileImg'] == null
+                  child: profile['photoUrl'] == '' ||
+                          profile['photoUrl'] == null
                       ? const CircleAvatar(
                           child: Icon(
                             Icons.person_outline,
@@ -75,7 +76,7 @@ class _HomeState extends State<Home> {
                           ),
                         )
                       : CircleAvatar(
-                          backgroundImage: NetworkImage(profile['profileImg']),
+                          backgroundImage: NetworkImage(profile['photoUrl']),
                           radius: 14,
                         ),
                   // profile['profileImg'] == '' || profile['profileImg'] == null

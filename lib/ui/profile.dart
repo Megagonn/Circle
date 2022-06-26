@@ -110,7 +110,15 @@ class _ProfileState extends State<Profile> {
                         Positioned(
                           top: 70,
                           left: -20,
-                          child: Container(
+                          child: profile['photoUrl'] == "" || profile['photoUrl'] == null ? const CircleAvatar(
+                          child: Icon(
+                            Icons.person_outline,
+                            size: 34,
+                            color: Colors.white,
+                          ),
+                        ) :
+
+                           Container(
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
@@ -119,9 +127,9 @@ class _ProfileState extends State<Profile> {
                                 color: Colors.white,
                                 width: 1.5,
                               ),
-                              image: const DecorationImage(
+                              image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage('assets/img1.jpeg')),
+                                  image: NetworkImage(profile['photoUrl'])),
                             ),
                           ),
                         ),
@@ -165,59 +173,68 @@ class _ProfileState extends State<Profile> {
                         ],
                       ),
                     ),
-                    Text(profile['username']),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(profile['username']),
+                    ),
 
                     /// nick of user
-                    Text(
-                      profile['bio'],
-                      softWrap: true,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5,),
+                      child: Text(
+                        profile['bio'],
+                        softWrap: true,
+                      ),
                     ), // Bio
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Icon(
-                          Icons.location_on_outlined,
-                          size: 14,
-                        ),
-                        Text.rich(
-                          TextSpan(
-                              text: 'Nigeria ',
-                              style: TextStyle(
-                                color: Colors.blueAccent,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: ' github.com/megagonn',
-                                  style: TextStyle(
-                                    color: Colors.blueAccent,
-                                  ),
-                                )
-                              ]),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: const [
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 20,
-                        ),
-                        Text('August 7, 1997'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text.rich(
-                          TextSpan(
-                            text: 'Following: ${profile['following'] ?? 0}',
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   children: const [
+                    //     Icon(
+                    //       Icons.location_on_outlined,
+                    //       size: 14,
+                    //     ),
+                    //     Text.rich(
+                    //       TextSpan(
+                    //           text: 'Nigeria ',
+                    //           style: TextStyle(
+                    //             color: Colors.blueAccent,
+                    //           ),
+                    //           children: [
+                    //             TextSpan(
+                    //               text: ' github.com/megagonn',
+                    //               style: TextStyle(
+                    //                 color: Colors.blueAccent,
+                    //               ),
+                    //             )
+                    //           ]),
+                    //     ),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   children: const [
+                    //     Icon(
+                    //       Icons.auto_awesome,
+                    //       size: 20,
+                    //     ),
+                    //     Text('August 7, 1997'),
+                    //   ],
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Text.rich(
+                            TextSpan(
+                              text: 'Following: ${profile['following'] ?? 0}',
+                            ),
                           ),
-                        ),
-                        Text.rich(
-                          TextSpan(
-                            text: '   Follower: ${profile['follower'] ?? 0}',
+                          Text.rich(
+                            TextSpan(
+                              text: '   Follower: ${profile['follower'] ?? 0}',
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const DefaultTabController(
                       length: 1,

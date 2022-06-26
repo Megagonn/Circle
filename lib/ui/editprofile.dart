@@ -1,5 +1,9 @@
+// ignore_for_file: unnecessary_const
+
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,10 +38,15 @@ class _EditState extends State<Edit> {
     return file;
   }
 
+  var pickedImage;
+
   @override
   Widget build(BuildContext context) {
     Map profile = widget.map;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Update Profile'),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -46,12 +55,17 @@ class _EditState extends State<Edit> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 6.0),
                   child: Stack(
                     children: [
-                      const CircleAvatar(
-                        radius: 80,
-                      ),
+                      pickedImage != null
+                          ? CircleAvatar(
+                              radius: 80,
+                              backgroundImage: FileImage(pickedImage),
+                            )
+                          : CircleAvatar(
+                              radius: 80,
+                            ),
                       Positioned(
                           top: 120,
                           right: 10,
@@ -61,6 +75,56 @@ class _EditState extends State<Edit> {
                                 icon: const Icon(Icons.add_a_photo_outlined),
                                 onPressed: () async {
                                   // await pickImage(source)
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Container(
+                                          padding: const EdgeInsets.all(20),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.transparent,
+                                          ),
+                                          child: Center(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                FloatingActionButton(
+                                                  heroTag: 'camera',
+                                                  onPressed: () async {
+                                                    pickedImage =
+                                                        await pickImage(
+                                                            ImageSource.camera);
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.camera,
+                                                    size: 34,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 40,
+                                                ),
+                                                FloatingActionButton(
+                                                  heroTag: 'gallery',
+                                                  onPressed: () async {
+                                                    pickedImage =
+                                                        await pickImage(
+                                                            ImageSource
+                                                                .gallery);
+                                                    setState(() async {});
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.image_outlined,
+                                                    size: 34,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
                                 },
                               ))),
                     ],
@@ -71,7 +135,7 @@ class _EditState extends State<Edit> {
                   child: TextFormField(
                     controller: firstName,
                     cursorColor: const Color(0xff002081),
-                    readOnly: true,
+                    // readOnly: true,
                     // obscureText: !showPassword,
                     decoration: InputDecoration(
                       hintText: profile['firstName'],
@@ -97,7 +161,7 @@ class _EditState extends State<Edit> {
                   child: TextFormField(
                     controller: lastName,
                     cursorColor: const Color(0xff002081),
-                    readOnly: true,
+                    // readOnly: true,
                     // obscureText: !showPassword,
                     decoration: InputDecoration(
                       hintText: profile['lastName'],
@@ -123,7 +187,7 @@ class _EditState extends State<Edit> {
                   child: TextFormField(
                     controller: userName,
                     cursorColor: const Color(0xff002081),
-                    readOnly: true,
+                    // readOnly: true,
                     // obscureText: !showPassword,
                     decoration: InputDecoration(
                       hintText: profile['username'],
@@ -176,19 +240,19 @@ class _EditState extends State<Edit> {
                     maxLines: 5,
                     // maxLength: 300,
                     // obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      hintText: 'Bio',
-                      contentPadding: EdgeInsets.all(8),
-                      focusedBorder: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      hintText: profile['bio'],
+                      contentPadding: const EdgeInsets.all(8),
+                      focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: BorderSide(
                           color: Colors.blueAccent,
                           width: 2,
                         ),
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.grey,
                         ),
                       ),
@@ -201,19 +265,21 @@ class _EditState extends State<Edit> {
                     controller: phone,
                     cursorColor: const Color(0xff002081),
                     // obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      hintText: 'Phone Contact',
-                      contentPadding: EdgeInsets.all(8),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                    decoration: InputDecoration(
+                      hintText: profile['phone'],
+                      contentPadding: const EdgeInsets.all(8),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.all(const Radius.circular(10)),
                         borderSide: BorderSide(
                           color: Colors.blueAccent,
                           width: 2,
                         ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
+                      border: const OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(const Radius.circular(10)),
+                        borderSide: const BorderSide(
                           color: Colors.grey,
                         ),
                       ),
@@ -225,17 +291,17 @@ class _EditState extends State<Edit> {
                   child: TextFormField(
                     cursorColor: const Color(0xff002081),
                     // obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      hintText: 'Current password',
-                      contentPadding: EdgeInsets.all(8),
-                      focusedBorder: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      hintText: profile['password'],
+                      contentPadding: const EdgeInsets.all(8),
+                      focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: BorderSide(
                           color: Colors.blueAccent,
                           width: 2,
                         ),
                       ),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: BorderSide(
                           color: Colors.grey,
@@ -272,6 +338,22 @@ class _EditState extends State<Edit> {
                 FlatBtn(
                   label: "Update",
                   onPress: () async {
+                    String? postUrl;
+                    if (pickedImage == null || pickedImage == '') {
+                      print('no file picked');
+                    } else {
+                      print('a was file picked');
+                      Reference imageRef = FirebaseStorage.instance
+                          .ref()
+                          .child('users_profile_pics')
+                          .child(profile['uid']);
+
+                      UploadTask upload =
+                          imageRef.putData(pickedImage.readAsBytesSync());
+                      TaskSnapshot snapShot = await upload;
+
+                      postUrl = await snapShot.ref.getDownloadURL();
+                    }
                     Map<String, Object> data = {
                       "firstName": firstName.text,
                       "lastName": lastName.text,
@@ -279,14 +361,18 @@ class _EditState extends State<Edit> {
                       "password": password.text,
                       "bio": bio.text,
                       "userName": userName.text,
+                      "photoUrl": postUrl!,
                     };
                     var response =
                         await PostMethods().updateProfile(profile['uid'], data);
+                    // await FirebaseFirestore.instance
+                    //     .collection('posts').;
                     if (response == "success") {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Home(), settings: RouteSettings(arguments: profile)));
+                              builder: (context) => const Home(),
+                              settings: RouteSettings(arguments: profile)));
                     }
                   },
                   color: Colors.blueAccent,

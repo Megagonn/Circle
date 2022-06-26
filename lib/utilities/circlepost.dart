@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:favorite_button/favorite_button.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:twit/firebase/post_method.dart';
 import 'package:twit/model/post.dart';
@@ -36,9 +40,29 @@ class _CircleCardState extends State<CircleCard> {
     // return !isLiked;
   }
 
+  profilImages() async {
+    var allphoto = [];
+    var data = await FirebaseFirestore.instance.collection("users").get();
+    var photoUrl = data.docs.forEach((element) {
+      element.data()['photoUrl'];
+      allphoto.add({
+        "photoUrl": element.data()['photoUrl'],
+        "uid": widget.post['uid'],
+      });
+    });
+    // print(allphoto.toSet());
+    return allphoto.toSet();
+  }
+
   // int likeCount = 0;
   // int commentCount = 0;
   // int recirculateCount = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    profilImages();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,18 +105,65 @@ class _CircleCardState extends State<CircleCard> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                post['profileImg'] == '' || post['profileImg'] == null
-                    ? const Icon(
-                        Icons.person_outline,
-                        size: 34,
-                        color: Colors.grey,
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(top: 0, right: 4),
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(post['profileImg']),
-                        ),
-                      ),
+                FutureBuilder(
+                  future: profilImages(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                          child: Column(),
+                          baseColor: Colors.grey.shade200,
+                          highlightColor: Colors.grey);
+                    } else if (snapshot.hasData) {
+                      Set list = snapshot.data;
+                      if (kDebugMode) {
+                        print(list);
+                      }
+                      var aar = list.where((element) =>
+                          element['uid'] == post['uid'] &&
+                          element['photoUrl'] != null);
+                      // == post['uid'] ||
+                      //         post['profileImg'] == null
+                      // ? const Icon(
+                      //     Icons.person_outline,
+                      //     size: 34,
+                      //     color: Colors.grey,
+                      //   )
+                      //     :
+                      return aar.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 0, right: 4),
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(aar.first['photoUrl']),
+                              ),
+                            )
+                          : const Icon(
+                              Icons.person_outline,
+                              size: 34,
+                              color: Colors.grey,
+                            );
+                    }
+                    return CircleAvatar();
+                  },
+                  // child: Column(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     post['profileImg'] == '' || post['profileImg'] == null
+                  //         ? const Icon(
+                  //             Icons.person_outline,
+                  //             size: 34,
+                  //             color: Colors.grey,
+                  //           )
+                  //         : Padding(
+                  //             padding: const EdgeInsets.only(top: 0, right: 4),
+                  //             child: CircleAvatar(
+                  //               backgroundImage: NetworkImage(post['profileImg']),
+                  //             ),
+                  //           ),
+                  //   ],
+                  // ),
+                ),
               ],
             ),
             Column(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twit/firebase/post_method.dart';
 import 'package:twit/ui/chatlist.dart';
 import 'package:twit/ui/profile.dart';
 
@@ -14,9 +15,19 @@ drawer(BuildContext context, Map map) {
         children: [
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: Colors.white),
-            currentAccountPicture: const CircleAvatar(
-              backgroundImage: AssetImage('assets/img2.jpeg'),
-            ),
+            currentAccountPicture: map['photoUrl'] == '' ||
+                          map['photoUrl'] == null
+                      ? const CircleAvatar(
+                          child: Icon(
+                            Icons.person_outline,
+                            size: 34,
+                            color: Colors.white,
+                          ),
+                        )
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(map['photoUrl']),
+                          radius: 14,
+                        ),
             accountName: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -91,7 +102,7 @@ drawer(BuildContext context, Map map) {
               drawerLink(
                   context, Icons.stacked_line_chart_outlined, 'Moments', ''),
               drawerLink(context, Icons.person_add_alt_outlined,
-                  'Follower request', ''),
+                  'Log Out', PostMethods().signOut()),
             ],
           ),
           const Divider(

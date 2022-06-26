@@ -12,6 +12,7 @@ class _ChatListState extends State<ChatList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: (){}, child: Icon(Icons.chat_outlined),),
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,

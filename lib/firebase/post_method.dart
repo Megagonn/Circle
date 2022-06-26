@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -148,6 +149,16 @@ class PostMethods {
             }
           ]
         });
+      } else {
+        await _firestore.collection("posts").doc(postId).set({
+          "profilePic": profilePic,
+          "name": name,
+          "userName": userName,
+          "uid": uid,
+          "text": text,
+          "commentId": commentId,
+          "datePublished": DateTime.now()
+        });
       }
     } catch (e) {
       print(e.toString());
@@ -258,10 +269,31 @@ class PostMethods {
     await _auth.signOut();
   }
 
-  Future<dynamic> allChats(cid) {
-    var chats = FirebaseFirestore.instance.collection('chats').snapshots();
-    var usersChat = chats.first;
-    return usersChat.then((value) => value.docs.first.data());
+  // Future<dynamic> allChats(cid) {
+  //   var chats = FirebaseFirestore.instance.collection('chats').snapshots();
+  //   var usersChat = chats.first;
+  //   return usersChat.then((value) => value.docs.first.data());
+  // }
+
+  Stream<dynamic> allChat(uid) {
+    var response = _firestore.collection('chatStore').doc(uid).snapshots();
+    return response;
+  }
+
+  Future sendMessage(uid, data) async {
+    DocumentSnapshot<Map<String, dynamic>> allMessages =
+        await _firestore.collection('chatStore').doc(uid).get();
+    var list = allMessages.data()!['chats'];
+    // var response = _firestore.collection('chatStore').doc(uid).set({'chats': [data]});
+
+    if (list.isNotEmpty) {
+      var response = _firestore.collection('chatStore').doc(uid).update({
+        'chats': [...list, data]
+      }).asStream();
+    } else {
+      var response = _firestore.collection('chatStore').doc(uid).set({'chats': [data]});
+    }
+    // return '';
   }
 }
 

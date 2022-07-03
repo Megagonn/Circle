@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:favorite_button/favorite_button.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:twit/firebase/post_method.dart';
-import 'package:twit/model/post.dart';
 import 'package:twit/utilities/ui.utl.dart';
 
 /// [CircleCard] is the post UI model.
@@ -41,22 +38,28 @@ class _CircleCardState extends State<CircleCard> {
   }
 
   profilImages() async {
-    var allphoto = [];
-    var data = await FirebaseFirestore.instance.collection("users").get();
-    var photoUrl = data.docs.forEach((element) {
-      element.data()['photoUrl'];
-      allphoto.add({
-        "photoUrl": element.data()['photoUrl'],
-        "uid": widget.post['uid'],
-      });
-    });
-    // print(allphoto.toSet());
-    return allphoto.toSet();
+    // var allphoto = [];
+    var data = await FirebaseStorage.instance
+        .ref()
+        .child("users_profile_pics")
+        .getData();
+    // var test = await FirebaseStorage.instance
+    //     .ref()
+    //     .child("users_profile_pics").child(widget.post['uid'])
+    //     .getData();
+    
+    var file = File.fromRawPath(data!);
+    print('data is $data');
+    // var photoUrl = data.docs.forEach((element) {
+    //   element.data()['photoUrl'];
+    //   allphoto.add({
+    //     "photoUrl": element.data()['photoUrl'],
+    //     "uid": widget.post['uid'],
+    //   });
+    // });
+    return file;
   }
 
-  // int likeCount = 0;
-  // int commentCount = 0;
-  // int recirculateCount = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -110,32 +113,23 @@ class _CircleCardState extends State<CircleCard> {
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Shimmer.fromColors(
-                          child: Column(),
-                          baseColor: Colors.grey.shade200,
-                          highlightColor: Colors.grey);
+                      return const CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.person_outline,
+                            color: Colors.white,
+                          ));
                     } else if (snapshot.hasData) {
-                      Set list = snapshot.data;
-                      if (kDebugMode) {
-                        print(list);
-                      }
-                      var aar = list.where((element) =>
-                          element['uid'] == post['uid'] &&
-                          element['photoUrl'] != null);
-                      // == post['uid'] ||
-                      //         post['profileImg'] == null
-                      // ? const Icon(
-                      //     Icons.person_outline,
-                      //     size: 34,
-                      //     color: Colors.grey,
-                      //   )
-                      //     :
-                      return aar.isNotEmpty
+                      File profilePics = snapshot.data;
+                      // var aar = list.where((element) =>
+                      //     element['uid'] == post['uid'] &&
+                      //     element['photoUrl'] != null);
+                      print(profilePics);
+                      return profilePics.toString().isEmpty
                           ? Padding(
                               padding: const EdgeInsets.only(top: 0, right: 4),
                               child: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(aar.first['photoUrl']),
+                                backgroundImage: FileImage(profilePics),
                               ),
                             )
                           : const Icon(
@@ -146,23 +140,6 @@ class _CircleCardState extends State<CircleCard> {
                     }
                     return CircleAvatar();
                   },
-                  // child: Column(
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: [
-                  //     post['profileImg'] == '' || post['profileImg'] == null
-                  //         ? const Icon(
-                  //             Icons.person_outline,
-                  //             size: 34,
-                  //             color: Colors.grey,
-                  //           )
-                  //         : Padding(
-                  //             padding: const EdgeInsets.only(top: 0, right: 4),
-                  //             child: CircleAvatar(
-                  //               backgroundImage: NetworkImage(post['profileImg']),
-                  //             ),
-                  //           ),
-                  //   ],
-                  // ),
                 ),
               ],
             ),

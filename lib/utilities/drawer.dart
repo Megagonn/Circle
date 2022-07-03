@@ -95,7 +95,7 @@ drawer(BuildContext context, Map map) {
                   Profile(
                     map: map,
                   )),
-              drawerLink(context, Icons.list_alt_outlined, 'Chats', const ChatList()),
+              drawerLink(context, Icons.list_alt_outlined, 'Chats', ChatList(map: map)),
               drawerLink(context, Icons.topic_outlined, 'Topics', ''),
               drawerLink(
                   context, Icons.bookmark_border_outlined, 'Bookmarks', ''),

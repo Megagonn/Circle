@@ -2,8 +2,9 @@
 
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,10 +33,13 @@ class _EditState extends State<Edit> {
     try {
       image = await ImagePicker().pickImage(source: source);
     } on PlatformException catch (e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
     File file = File(image!.path);
-    return file;
+    var pFile = !kIsWeb ?  FileImage(file) :  NetworkImage(image!.path) ;
+    return pFile;
   }
 
   var pickedImage;
@@ -49,8 +53,10 @@ class _EditState extends State<Edit> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          physics: const ScrollPhysics(),
+          scrollDirection: Axis.vertical,
           child: Container(
-            height: MediaQuery.of(context).size.height,
+            // height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
             child: Column(
               children: [
@@ -61,7 +67,7 @@ class _EditState extends State<Edit> {
                       pickedImage != null
                           ? CircleAvatar(
                               radius: 80,
-                              backgroundImage: FileImage(pickedImage),
+                              backgroundImage: pickedImage
                             )
                           : CircleAvatar(
                               radius: 80,
@@ -94,7 +100,9 @@ class _EditState extends State<Edit> {
                                                     pickedImage =
                                                         await pickImage(
                                                             ImageSource.camera);
-                                                    setState(() {});
+                                                    setState(() {
+                                                      pickedImage = pickedImage;
+                                                    });
                                                     Navigator.pop(context);
                                                   },
                                                   child: const Icon(
@@ -112,7 +120,9 @@ class _EditState extends State<Edit> {
                                                         await pickImage(
                                                             ImageSource
                                                                 .gallery);
-                                                    setState(() async {});
+                                                    setState(() {
+                                                      pickedImage = pickedImage;
+                                                    });
                                                     Navigator.pop(context);
                                                   },
                                                   child: const Icon(
@@ -208,30 +218,30 @@ class _EditState extends State<Edit> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    cursorColor: const Color(0xff002081),
-                    // obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      hintText: 'Name Name',
-                      contentPadding: EdgeInsets.all(8),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.blueAccent,
-                          width: 2,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                //   child: TextFormField(
+                //     cursorColor: const Color(0xff002081),
+                //     // obscureText: !showPassword,
+                //     decoration: const InputDecoration(
+                //       hintText: 'Name Name',
+                //       contentPadding: EdgeInsets.all(8),
+                //       focusedBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.blueAccent,
+                //           width: 2,
+                //         ),
+                //       ),
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: TextFormField(
@@ -241,7 +251,9 @@ class _EditState extends State<Edit> {
                     // maxLength: 300,
                     // obscureText: !showPassword,
                     decoration: InputDecoration(
-                      hintText: profile['bio'],
+                      hintText: profile['bio'].toString().isNotEmpty
+                          ? profile['bio']
+                          : 'Bio',
                       contentPadding: const EdgeInsets.all(8),
                       focusedBorder: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -264,9 +276,12 @@ class _EditState extends State<Edit> {
                   child: TextFormField(
                     controller: phone,
                     cursorColor: const Color(0xff002081),
+                    keyboardType: TextInputType.phone,
                     // obscureText: !showPassword,
                     decoration: InputDecoration(
-                      hintText: profile['phone'],
+                      hintText: profile['phone'].toString().isNotEmpty
+                          ? profile['phone']
+                          : 'Phone',
                       contentPadding: const EdgeInsets.all(8),
                       focusedBorder: const OutlineInputBorder(
                         borderRadius:
@@ -286,63 +301,67 @@ class _EditState extends State<Edit> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    cursorColor: const Color(0xff002081),
-                    // obscureText: !showPassword,
-                    decoration: InputDecoration(
-                      hintText: profile['password'],
-                      contentPadding: const EdgeInsets.all(8),
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.blueAccent,
-                          width: 2,
-                        ),
-                      ),
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: TextFormField(
-                    controller: password,
-                    cursorColor: const Color(0xff002081),
-                    // obscureText: !showPassword,
-                    decoration: const InputDecoration(
-                      hintText: 'New password',
-                      contentPadding: EdgeInsets.all(8),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.blueAccent,
-                          width: 2,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                //   child: TextFormField(
+                //     cursorColor: const Color(0xff002081),
+                //     // obscureText: !showPassword,
+                //     decoration: InputDecoration(
+                //       hintText: profile['password'],
+                //       contentPadding: const EdgeInsets.all(8),
+                //       focusedBorder: const OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.blueAccent,
+                //           width: 2,
+                //         ),
+                //       ),
+                //       border: const OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                //   child: TextFormField(
+                //     controller: password,
+                //     cursorColor: const Color(0xff002081),
+                //     // obscureText: !showPassword,
+                //     decoration: const InputDecoration(
+                //       hintText: 'New password',
+                //       contentPadding: EdgeInsets.all(8),
+                //       focusedBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.blueAccent,
+                //           width: 2,
+                //         ),
+                //       ),
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                //         borderSide: BorderSide(
+                //           color: Colors.grey,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 FlatBtn(
                   label: "Update",
                   onPress: () async {
                     String? postUrl;
                     if (pickedImage == null || pickedImage == '') {
-                      print('no file picked');
+                      if (kDebugMode) {
+                        print('no file picked');
+                      }
                     } else {
-                      print('a was file picked');
+                      if (kDebugMode) {
+                        print('a was file picked');
+                      }
                       Reference imageRef = FirebaseStorage.instance
                           .ref()
                           .child('users_profile_pics')

@@ -1,13 +1,13 @@
 // ignore_for_file: avoid_print
 
-import 'dart:ffi';
-import 'dart:io';
-import 'dart:typed_data';
+// import 'dart:ffi';
+// import 'dart:io';
+// import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:twit/model/post.dart';
 import 'package:uuid/uuid.dart';
 
@@ -275,23 +275,27 @@ class PostMethods {
   //   return usersChat.then((value) => value.docs.first.data());
   // }
 
-  Stream<dynamic> allChat(uid) {
-    var response = _firestore.collection('chatStore').doc(uid).snapshots();
+  Stream<dynamic> allChat(email) {
+    var response = _firestore.collection('chatStore').doc(email).snapshots();
     return response;
   }
 
-  Future sendMessage(uid, data) async {
-    DocumentSnapshot<Map<String, dynamic>> allMessages =
-        await _firestore.collection('chatStore').doc(uid).get();
-    var list = allMessages.data()!['chats'];
-    // var response = _firestore.collection('chatStore').doc(uid).set({'chats': [data]});
+  Future sendMessage(String uid, String email, data) async {
+    DocumentSnapshot<Map<String, dynamic>> allMessages = await _firestore
+        .collection('chatStore')
+        .doc(email)
+        .collection(uid).doc(uid)
+        .get();
+    List list = [allMessages.data()];
 
     if (list.isNotEmpty) {
-      var response = _firestore.collection('chatStore').doc(uid).update({
+      var response = _firestore.collection('chatStore').doc(email).collection(uid).doc(uid).update({
         'chats': [...list, data]
       }).asStream();
     } else {
-      var response = _firestore.collection('chatStore').doc(uid).set({'chats': [data]});
+      var response = _firestore.collection('chatStore').doc(email).collection(uid).doc(uid).set({
+        'chats': [data]
+      });
     }
     // return '';
   }

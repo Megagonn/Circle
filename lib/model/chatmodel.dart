@@ -8,11 +8,11 @@ class ChatModel {
   factory ChatModel.toClass(Map map) {
     return ChatModel(text: map['text'], uid: map['uid'], time: map['time']);
   }
-  toJson(ChatModel chatModel) {
+  Map<String, dynamic> toJson() {
     return {
-      'text': chatModel.text,
-      'uid': chatModel.uid,
-      'time': chatModel.time,
+      'text': text,
+      'uid': uid,
+      'time': time,
     };
   }
 }

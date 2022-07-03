@@ -28,7 +28,7 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: SingleChildScrollView(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height-100,
               child: Column(
                 children: [
                   const Spacer(),
@@ -53,7 +53,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                         fillColor: Colors.white,
                         hintText: 'First name',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -69,7 +70,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                         fillColor: Colors.white,
                         hintText: 'Last name',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -84,7 +86,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                         fillColor: Colors.white,
                         hintText: 'Email',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -100,7 +103,8 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                         fillColor: Colors.white,
                         hintText: 'Phone',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -122,10 +126,11 @@ class _SignUpWithEmailState extends State<SignUpWithEmail> {
                               showPassword = !showPassword;
                             });
                           },
-                          icon: const Icon(Icons.remove_red_eye_outlined),
+                          icon: showPassword ? const Icon(Icons.remove_red_eye_outlined) : const Icon(Icons.visibility_off),
                         ),
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),

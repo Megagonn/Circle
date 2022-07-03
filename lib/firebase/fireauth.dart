@@ -73,7 +73,9 @@ class FireAuth {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       res = 'success';
-      print(credential.user);
+      if (kDebugMode) {
+        print(credential.user);
+      }
     } on FirebaseAuthException catch (e) {
       res = e.toString();
     }
@@ -87,7 +89,9 @@ class FireAuth {
       Iterable<QueryDocumentSnapshot<Map<String, dynamic>>> res =
           userDetails.where((data) => email == data.data()['email']);
       profile = res.first.data();
-      print(res.first.data());
+      if (kDebugMode) {
+        print(res.first.data());
+      }
     });
 
     return {'res' : res, 'profile' : profile};

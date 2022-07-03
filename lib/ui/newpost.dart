@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
+// import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -111,7 +112,9 @@ class _PostState extends State<Post> {
                                     firstName: profile['firstName'],
                                     lastName: profile['lastName'],
                                   );
-                                  print('res in newpost is $res');
+                                  if (kDebugMode) {
+                                    print('res in newpost is $res');
+                                  }
                                   if (res == 'success') {
                                     pickedImage = null;
                                     Navigator.pushReplacement(
@@ -181,7 +184,7 @@ class _PostState extends State<Post> {
                                   height: 200,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: Colors.red,
+                                    // color: Colors.red,
                                     image: pickedImage == null
                                         ? null
                                         : DecorationImage(
@@ -210,7 +213,9 @@ class _PostState extends State<Post> {
     try {
       image = await ImagePicker().pickImage(source: source);
     } on PlatformException catch (e) {
-      print(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
     }
     File file = File(image!.path);
     return file;

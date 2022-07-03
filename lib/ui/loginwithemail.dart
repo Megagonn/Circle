@@ -25,7 +25,7 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: SingleChildScrollView(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height - 100,
               child: Column(
                 children: [
                   const Spacer(),
@@ -49,7 +49,8 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                         fillColor: Colors.white,
                         hintText: 'Email',
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -71,10 +72,13 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                               showPassword = !showPassword;
                             });
                           },
-                          icon: const Icon(Icons.remove_red_eye_outlined),
+                          icon: showPassword
+                              ? const Icon(Icons.remove_red_eye_outlined)
+                              : const Icon(Icons.visibility_off),
                         ),
                         hintStyle: const TextStyle(color: Colors.blueAccent),
-                        focusedBorder: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50)),
                       ),
@@ -85,6 +89,9 @@ class _LoginWithEmailState extends State<LoginWithEmail> {
                     child: FlatBtn(
                       label: 'Login',
                       onPress: () async {
+                        const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
                         var res = await FireAuth().login(
                           email: emailController.text,
                           password: passwordController.text,

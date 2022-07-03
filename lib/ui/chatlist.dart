@@ -1,8 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twit/ui/chatpage.dart';
+import 'package:twit/ui/friends.dart';
 
 class ChatList extends StatefulWidget {
-  const ChatList({Key? key}) : super(key: key);
+  const ChatList({Key? key, required this.map}) : super(key: key);
+  final Map map;
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -11,8 +14,18 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   @override
   Widget build(BuildContext context) {
+    Map map = widget.map;
+    if (kDebugMode) {
+      print(map);
+    }
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: (){}, child: Icon(Icons.chat_outlined),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const Friends()));
+        },
+        child: Icon(Icons.chat_outlined),
+      ),
       body: SafeArea(
         child: Container(
           height: MediaQuery.of(context).size.height,
@@ -31,19 +44,26 @@ class _ChatListState extends State<ChatList> {
                 child: Row(
                   children: [
                     Row(
-                      children: const [
-                        BackButton(),
-                        CircleAvatar(
-                          radius: 18,
-                          // backgroundImage: NetworkImage('src'),
-                        ),
+                      children: [
+                        const BackButton(),
+                        map['profilePic'] == null
+                            ? const CircleAvatar(
+                                radius: 18,
+                                // backgroundImage: NetworkImage('src'),
+                              )
+                            : CircleAvatar(
+                                backgroundImage: NetworkImage(map['profilePic']),
+                              )
                       ],
                     ),
-                    const SizedBox(
-                      width: 150,
+                    SizedBox(
+                      width: 250,
                       child: ListTile(
-                        title: Text('Name Name'),
-                        subtitle: Text('@username'),
+                        title: Text(
+                          "${map['firstName']} ${map['lastName']}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(map['username'] ?? ''),
                       ),
                     )
                   ],
@@ -54,21 +74,70 @@ class _ChatListState extends State<ChatList> {
                   height: MediaQuery.of(context).size.height - 120,
                   child: ListView(
                     children: const [
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
-                      ChatFrontCard(),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
+                      ChatFrontCard(
+                        chats: [],
+                        profile: {},
+                      ),
                     ],
                   ),
                 ),
@@ -82,7 +151,10 @@ class _ChatListState extends State<ChatList> {
 }
 
 class ChatFrontCard extends StatelessWidget {
-  const ChatFrontCard({Key? key}) : super(key: key);
+  const ChatFrontCard({Key? key, required this.profile, required this.chats})
+      : super(key: key);
+  final Map profile;
+  final List chats;
 
   @override
   Widget build(BuildContext context) {

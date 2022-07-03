@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:twit/firebase/post_method.dart';
+import 'package:twit/model/chatmodel.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -501,10 +503,15 @@ class _ChatPageState extends State<ChatPage> {
                             // expands: true,
                             style: const TextStyle(
                                 fontSize: 20.0, color: Colors.black87),
+                            maxLines: 1,
+                            // maxLengthEnforced: false,
+                            maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+                            textInputAction: TextInputAction.newline,
                             decoration: InputDecoration(
                               hintText: 'Type a message',
                               filled: true,
                               fillColor: Colors.white,
+                              
                               contentPadding: const EdgeInsets.only(
                                   left: 16.0,
                                   bottom: 8.0,
@@ -520,8 +527,15 @@ class _ChatPageState extends State<ChatPage> {
                       color: Colors.transparent,
                       child: IconButton(
                           onPressed: () async {
-                            await PostMethods()
-                                .sendMessage('uid', _controller.text.trim());
+                            await PostMethods().sendMessage(
+                              'uid',
+                              'email',
+                              ChatModel(
+                                      text: _controller.text.trim(),
+                                      uid: 'uid',
+                                      time: DateTime.now(),)
+                                  .toJson(),
+                            );
                             _controller.clear();
                           },
                           icon: const Icon(

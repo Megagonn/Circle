@@ -15,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  var key = GlobalKey<ScaffoldState>();
   postStream() async {
     var posts = [];
     var getPost = await firestore.collection('posts').get();
@@ -22,13 +23,13 @@ class _HomeState extends State<Home> {
     postGotten.forEach((element) {
       posts.add(element.data());
     });
-    // await 
+    // await
     return posts;
-    // print('this is posts $posts');
   }
 
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     super.initState();
     postStream();
@@ -39,6 +40,7 @@ class _HomeState extends State<Home> {
     Map profile = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
       // appBar: AppBar(),
+      key: key,
       drawer: drawer(context, profile),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -64,7 +66,8 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.all(8.0),
                 child: InkWell(
                   onTap: () {
-                    drawer(context, profile);
+                    key.currentState?.openDrawer();
+                    // drawer(context, profile);
                   },
                   child: profile['photoUrl'] == '' ||
                           profile['photoUrl'] == null

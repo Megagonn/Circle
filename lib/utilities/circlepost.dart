@@ -39,25 +39,30 @@ class _CircleCardState extends State<CircleCard> {
 
   profilImages() async {
     // var allphoto = [];
-    var data = await FirebaseStorage.instance
-        .ref()
-        .child("users_profile_pics")
-        .getData();
-    // var test = await FirebaseStorage.instance
-    //     .ref()
-    //     .child("users_profile_pics").child(widget.post['uid'])
-    //     .getData();
-    
-    var file = File.fromRawPath(data!);
-    print('data is $data');
-    // var photoUrl = data.docs.forEach((element) {
-    //   element.data()['photoUrl'];
-    //   allphoto.add({
-    //     "photoUrl": element.data()['photoUrl'],
-    //     "uid": widget.post['uid'],
-    //   });
-    // });
-    return file;
+    try {
+      var data = await FirebaseStorage.instance
+          .ref()
+          .child("users_profile_pics").child(widget.post['uid'])
+          .getData();
+      // var test = await FirebaseStorage.instance
+      //     .ref()
+      //     .child("users_profile_pics").child(widget.post['uid'])
+      //     .getData();
+
+      var file = File.fromRawPath(data!);
+      print('data is $data');
+      // var photoUrl = data.docs.forEach((element) {
+      //   element.data()['photoUrl'];
+      //   allphoto.add({
+      //     "photoUrl": element.data()['photoUrl'],
+      //     "uid": widget.post['uid'],
+      //   });
+      // });
+      return file;
+    } on FirebaseException catch (e) {
+      // TODO
+      print(e.code);
+    }
   }
 
   @override
@@ -213,7 +218,7 @@ class _CircleCardState extends State<CircleCard> {
                               height: 200,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.red,
+                                  color: Colors.grey.shade100,
                                   image: DecorationImage(
                                     image: NetworkImage(post['postUrl']),
                                     fit: BoxFit.cover,

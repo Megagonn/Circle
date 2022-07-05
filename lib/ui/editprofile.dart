@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_const
 
 import 'dart:io';
+import 'dart:typed_data';
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,6 +21,9 @@ class Edit extends StatefulWidget {
   State<Edit> createState() => _EditState();
 }
 
+var pickedImage;
+File? file;
+
 class _EditState extends State<Edit> {
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
@@ -37,12 +41,10 @@ class _EditState extends State<Edit> {
         print(e.toString());
       }
     }
-    File file = File(image!.path);
-    var pFile = !kIsWeb ?  FileImage(file) :  NetworkImage(image!.path) ;
+     file = File(image!.path);
+    var pFile = !kIsWeb ? FileImage(file!) : NetworkImage(image!.path);
     return pFile;
   }
-
-  var pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +68,7 @@ class _EditState extends State<Edit> {
                     children: [
                       pickedImage != null
                           ? CircleAvatar(
-                              radius: 80,
-                              backgroundImage: pickedImage
-                            )
+                              radius: 80, backgroundImage: pickedImage)
                           : CircleAvatar(
                               radius: 80,
                             ),
@@ -218,30 +218,6 @@ class _EditState extends State<Edit> {
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                //   child: TextFormField(
-                //     cursorColor: const Color(0xff002081),
-                //     // obscureText: !showPassword,
-                //     decoration: const InputDecoration(
-                //       hintText: 'Name Name',
-                //       contentPadding: EdgeInsets.all(8),
-                //       focusedBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.blueAccent,
-                //           width: 2,
-                //         ),
-                //       ),
-                //       border: OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: TextFormField(
@@ -301,64 +277,19 @@ class _EditState extends State<Edit> {
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                //   child: TextFormField(
-                //     cursorColor: const Color(0xff002081),
-                //     // obscureText: !showPassword,
-                //     decoration: InputDecoration(
-                //       hintText: profile['password'],
-                //       contentPadding: const EdgeInsets.all(8),
-                //       focusedBorder: const OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.blueAccent,
-                //           width: 2,
-                //         ),
-                //       ),
-                //       border: const OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                //   child: TextFormField(
-                //     controller: password,
-                //     cursorColor: const Color(0xff002081),
-                //     // obscureText: !showPassword,
-                //     decoration: const InputDecoration(
-                //       hintText: 'New password',
-                //       contentPadding: EdgeInsets.all(8),
-                //       focusedBorder: OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.blueAccent,
-                //           width: 2,
-                //         ),
-                //       ),
-                //       border: OutlineInputBorder(
-                //         borderRadius: BorderRadius.all(Radius.circular(10)),
-                //         borderSide: BorderSide(
-                //           color: Colors.grey,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 FlatBtn(
                   label: "Update",
                   onPress: () async {
                     String? postUrl;
+                    // File? file;
+                    Uint8List? uint8list;
                     if (pickedImage == null || pickedImage == '') {
                       if (kDebugMode) {
                         print('no file picked');
                       }
                     } else {
+                      // file = pickedImage;
+                      uint8list = file!.readAsBytesSync();
                       if (kDebugMode) {
                         print('a was file picked');
                       }
@@ -367,8 +298,7 @@ class _EditState extends State<Edit> {
                           .child('users_profile_pics')
                           .child(profile['uid']);
 
-                      UploadTask upload =
-                          imageRef.putData(pickedImage.readAsBytesSync());
+                      UploadTask upload = imageRef.putData(uint8list);
                       TaskSnapshot snapShot = await upload;
 
                       postUrl = await snapShot.ref.getDownloadURL();
@@ -380,7 +310,7 @@ class _EditState extends State<Edit> {
                       "password": password.text,
                       "bio": bio.text,
                       "userName": userName.text,
-                      "photoUrl": postUrl!,
+                      "photoUrl": postUrl ?? '',
                     };
                     var response =
                         await PostMethods().updateProfile(profile['uid'], data);

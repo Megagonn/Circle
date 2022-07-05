@@ -4,6 +4,8 @@
 // import 'dart:io';
 // import 'dart:typed_data';
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,7 +20,7 @@ class PostMethods {
 
   Future<String> addPost({
     String text = '',
-    var file,
+    File? file,
     required String uid,
     required String username,
     required String firstName,
@@ -28,14 +30,14 @@ class PostMethods {
     String res = "some error occur";
     String postId = const Uuid().v1();
     var uint8list;
-    if (file == '' || file == null) {
-      uint8list = '';
+    if (file == null) {
+      // uint8list = '';
     } else {
       uint8list = file.readAsBytesSync();
     }
     try {
       String? postUrl;
-      if (file == null || file == '') {
+      if (file == null) {
         print('no file picked');
       } else {
         print('a was file picked');

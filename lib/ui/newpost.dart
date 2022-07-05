@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:html' as html;
 // import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -12,6 +13,8 @@ import 'package:twit/ui/homepage.dart';
 // import 'package:uuid/uuid.dart';
 
 var pickedImage;
+File? file;
+// var webFile = html.File;
 
 class Post extends StatefulWidget {
   const Post({Key? key}) : super(key: key);
@@ -53,7 +56,9 @@ class _PostState extends State<Post> {
                   onPressed: () async {
                     showSourceOption = !showSourceOption;
                     pickedImage = await pickImage(ImageSource.camera);
-                    setState(() {});
+                    setState(() {
+                      pickedImage = pickedImage;
+                    });
                     // chooseLocation(context);
                   },
                   child: const Icon(
@@ -69,7 +74,9 @@ class _PostState extends State<Post> {
                   onPressed: () async {
                     showSourceOption = !showSourceOption;
                     pickedImage = await pickImage(ImageSource.gallery);
-                    setState(() {});
+                    setState(() {
+                      pickedImage = pickedImage;
+                    });
                     // chooseLocation(context);
                   },
                   child: const Icon(
@@ -108,7 +115,7 @@ class _PostState extends State<Post> {
                                     username: profile['username'],
                                     profileImg: profile['photoUrl'] ?? '',
                                     text: controller.text,
-                                    file: pickedImage,
+                                    file: file,
                                     firstName: profile['firstName'],
                                     lastName: profile['lastName'],
                                   );
@@ -188,7 +195,7 @@ class _PostState extends State<Post> {
                                     image: pickedImage == null
                                         ? null
                                         : DecorationImage(
-                                            image: FileImage(pickedImage!),
+                                            image: pickedImage,
                                             fit: BoxFit.cover,
                                           ),
                                   ),
@@ -217,8 +224,9 @@ class _PostState extends State<Post> {
         print(e.toString());
       }
     }
-    File file = File(image!.path);
-    return file;
+    file = File(image!.path);
+    var pFile = !kIsWeb ? FileImage(file!) : NetworkImage(image!.path);
+    return pFile;
   }
 
   /// This function allows user to either select image from gallery or

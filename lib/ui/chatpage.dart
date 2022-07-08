@@ -18,6 +18,24 @@ class _ChatPageState extends State<ChatPage> {
   bool emojiShowing = false;
   var height = false;
 
+  final FocusNode focusNode = FocusNode();
+  void onFocusChange() {
+    if (focusNode.hasFocus) {
+      // Hide sticker when keyboard appear
+      setState(() {
+        emojiShowing = false;
+      });
+    }
+  }
+
+  void showEmoji() {
+    // Hide keyboard when sticker appear
+    focusNode.unfocus();
+    setState(() {
+      emojiShowing = !emojiShowing;
+    });
+  }
+
   _onEmojiSelected(Emoji emoji) {
     _controller
       ..text += emoji.emoji
@@ -483,12 +501,7 @@ class _ChatPageState extends State<ChatPage> {
                     Material(
                       color: Colors.transparent,
                       child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            emojiShowing = !emojiShowing;
-                            height = !height;
-                          });
-                        },
+                        onPressed: showEmoji,
                         icon: const Icon(
                           Icons.emoji_emotions,
                           color: Colors.grey,
@@ -505,13 +518,14 @@ class _ChatPageState extends State<ChatPage> {
                                 fontSize: 20.0, color: Colors.black87),
                             maxLines: 1,
                             // maxLengthEnforced: false,
-                            maxLengthEnforcement: MaxLengthEnforcement.truncateAfterCompositionEnds,
+                            maxLengthEnforcement: MaxLengthEnforcement
+                                .truncateAfterCompositionEnds,
                             textInputAction: TextInputAction.newline,
+                            focusNode: focusNode,
                             decoration: InputDecoration(
                               hintText: 'Type a message',
                               filled: true,
                               fillColor: Colors.white,
-                              
                               contentPadding: const EdgeInsets.only(
                                   left: 16.0,
                                   bottom: 8.0,
@@ -531,10 +545,10 @@ class _ChatPageState extends State<ChatPage> {
                               'uid',
                               'email',
                               ChatModel(
-                                      text: _controller.text.trim(),
-                                      uid: 'uid',
-                                      time: DateTime.now(),)
-                                  .toJson(),
+                                text: _controller.text.trim(),
+                                uid: 'uid',
+                                time: DateTime.now(),
+                              ).toJson(),
                             );
                             _controller.clear();
                           },

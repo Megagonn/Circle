@@ -38,26 +38,15 @@ class _CircleCardState extends State<CircleCard> {
   }
 
   profilImages() async {
-    // var allphoto = [];
     try {
       var data = await FirebaseStorage.instance
           .ref()
-          .child("users_profile_pics").child(widget.post['uid'])
+          .child("users_profile_pics")
+          .child(widget.post['uid'])
           .getData();
-      // var test = await FirebaseStorage.instance
-      //     .ref()
-      //     .child("users_profile_pics").child(widget.post['uid'])
-      //     .getData();
 
       var file = File.fromRawPath(data!);
       print('data is $data');
-      // var photoUrl = data.docs.forEach((element) {
-      //   element.data()['photoUrl'];
-      //   allphoto.add({
-      //     "photoUrl": element.data()['photoUrl'],
-      //     "uid": widget.post['uid'],
-      //   });
-      // });
       return file;
     } on FirebaseException catch (e) {
       // TODO
@@ -79,9 +68,9 @@ class _CircleCardState extends State<CircleCard> {
     List allLikes = post['likes'];
     Map profile = widget.prof;
     // print(profile);
-    bool commented = false;
+    // bool commented = false;
     bool liked = false;
-    bool recirculated = false;
+    // bool recirculated = false;
 
     allLikes.forEach((element) {
       if (element == profile['uid']) {
@@ -91,7 +80,7 @@ class _CircleCardState extends State<CircleCard> {
 
     int likeCount = post['likes'].length;
     int commentCount = post['comment'].length;
-    int recirculateCount = post['repost'].length;
+    // int recirculateCount = post['repost'].length;
     // print(post['profileImg']);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
@@ -110,43 +99,39 @@ class _CircleCardState extends State<CircleCard> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                FutureBuilder(
-                  future: profilImages(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.person_outline,
-                            color: Colors.white,
-                          ));
-                    } else if (snapshot.hasData) {
-                      File profilePics = snapshot.data;
-                      // var aar = list.where((element) =>
-                      //     element['uid'] == post['uid'] &&
-                      //     element['photoUrl'] != null);
-                      print(profilePics);
-                      return profilePics.toString().isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 0, right: 4),
-                              child: CircleAvatar(
-                                backgroundImage: FileImage(profilePics),
-                              ),
-                            )
-                          : const Icon(
+            Padding(
+              padding: const EdgeInsets.only(top: 10, right: 4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  FutureBuilder(
+                    future: profilImages(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: Icon(
                               Icons.person_outline,
-                              size: 34,
-                              color: Colors.grey,
-                            );
-                    }
-                    return CircleAvatar();
-                  },
-                ),
-              ],
+                              color: Colors.white,
+                            ));
+                      } else if (snapshot.hasData) {
+                        File profilePics = snapshot.data;
+                        return profilePics.toString().isEmpty
+                            ? CircleAvatar(
+                              backgroundImage: FileImage(profilePics),
+                            )
+                            : const Icon(
+                                Icons.person_outline,
+                                size: 34,
+                                color: Colors.grey,
+                              );
+                      }
+                      return const CircleAvatar();
+                    },
+                  ),
+                ],
+              ),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -160,22 +145,22 @@ class _CircleCardState extends State<CircleCard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          flex: 3,
+                          flex: 4,
                           child: Text(
                             post['firstName'] + ' ' + post['lastName'],
-                            style: TextStyle(fontWeight: FontWeight.w700),
+                            style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
                         ),
                         Expanded(
                           flex: 2,
                           child: Text(
                             post['userName'],
-                            style: TextStyle(),
+                            style: const TextStyle(),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
                             timeago.format(
                                 DateTime.tryParse(
@@ -186,13 +171,15 @@ class _CircleCardState extends State<CircleCard> {
                                 locale: 'en_short'),
                           ),
                         ),
-                        // Expanded(
-                        //   flex: 1,
-                        //   child: IconButton(
-                        //     onPressed: () {},
-                        //     icon: Icon(Icons.adaptive.more),
-                        //   ),
-                        // ),
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            onPressed: () {
+                              
+                            },
+                            icon: Icon(Icons.adaptive.more),
+                          ),
+                        ),
                       ],
                     ),
                   ),
